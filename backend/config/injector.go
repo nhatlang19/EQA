@@ -31,12 +31,27 @@ var authCtrlSet = wire.NewSet(controller.AuthControllerInit,
 	wire.Bind(new(controller.AuthController), new(*controller.AuthControllerImpl)),
 )
 
+var programRepoSet = wire.NewSet(repository.ProgramRepositoryInit,
+	wire.Bind(new(repository.ProgramRepository), new(*repository.ProgramRepositoryImpl)),
+)
+
+var programServiceSet = wire.NewSet(service.ProgramServiceInit,
+	wire.Bind(new(service.ProgramService), new(*service.ProgramServiceImpl)),
+)
+
+var programCtrlSet = wire.NewSet(controller.ProgramControllerInit,
+	wire.Bind(new(controller.ProgramController), new(*controller.ProgramControllerImpl)),
+)
+
 func Init() *Initialization {
 	wire.Build(NewInitialization,
 		db,
 		userRepoSet,
 		authServiceSet,
 		authCtrlSet,
+		programRepoSet,
+		programServiceSet,
+		programCtrlSet,
 	)
 	return nil
 }

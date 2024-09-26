@@ -15,18 +15,18 @@ func init() {
 	config.InitLog()
 }
 
-// @title           BLUE HOUSE API
+// @title           EQA API
 // @version         1.0
-// @description     This page allows you to explore and interact with BLUE HOUSE System REST API.
+// @description     This page allows you to explore and interact with EQA System REST API.
 // @termsOfService  http://swagger.io/terms/
 
 // @contact.name   API Support
 // @contact.url    http://www.swagger.io/support
-// @contact.email  nguyennb@teecom.vn
+// @contact.email  nhatlang19@gmail.com
 // @securityDefinitions.apiKey JWT
 // @in header
 // @name Authorization
-// @host      localhost:8080
+// @host      localhost:8081
 // @BasePath  /
 
 func main() {

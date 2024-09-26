@@ -5,9 +5,9 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
   ssr: false, // Set to true if you want server-side rendering
   runtimeConfig: {
-      public: {
-          apiBase: process.env.API_BASE || 'http://localhost:8080/api',
-      },
+    public: {
+        apiBase: process.env.API_BASE || 'http://localhost:8081/api',
+    },
   },
   devServer: {
     port: 3333,

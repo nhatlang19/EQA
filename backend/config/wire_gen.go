@@ -21,7 +21,10 @@ func Init() *Initialization {
 	userRepositoryImpl := repository.UserRepositoryInit(gormDB)
 	authServiceImpl := service.AuthServiceInit(userRepositoryImpl)
 	authControllerImpl := controller.AuthControllerInit(authServiceImpl)
-	initialization := NewInitialization(userRepositoryImpl, authServiceImpl, authControllerImpl)
+	programRepositoryImpl := repository.ProgramRepositoryInit(gormDB)
+	programServiceImpl := service.ProgramServiceInit(programRepositoryImpl)
+	programControllerImpl := controller.ProgramControllerInit(programServiceImpl)
+	initialization := NewInitialization(userRepositoryImpl, authServiceImpl, authControllerImpl, programRepositoryImpl, programControllerImpl)
 	return initialization
 }
 
@@ -36,3 +39,9 @@ var userRepoSet = wire.NewSet(repository.UserRepositoryInit, wire.Bind(new(repos
 var authServiceSet = wire.NewSet(service.AuthServiceInit, wire.Bind(new(service.AuthService), new(*service.AuthServiceImpl)))
 
 var authCtrlSet = wire.NewSet(controller.AuthControllerInit, wire.Bind(new(controller.AuthController), new(*controller.AuthControllerImpl)))
+
+var programRepoSet = wire.NewSet(repository.ProgramRepositoryInit, wire.Bind(new(repository.ProgramRepository), new(*repository.ProgramRepositoryImpl)))
+
+var programServiceSet = wire.NewSet(service.ProgramServiceInit, wire.Bind(new(service.ProgramService), new(*service.ProgramServiceImpl)))
+
+var programCtrlSet = wire.NewSet(controller.ProgramControllerInit, wire.Bind(new(controller.ProgramController), new(*controller.ProgramControllerImpl)))

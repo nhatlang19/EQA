@@ -1,4 +1,12 @@
 definitions:
+  dto.ApiResponse:
+    properties:
+      data: {}
+      key:
+        type: string
+      message:
+        type: string
+    type: object
   dto.LoginReq:
     properties:
       password:
@@ -19,10 +27,9 @@ info:
     email: nguyennb@teecom.vn
     name: API Support
     url: http://www.swagger.io/support
-  description: This page allows you to explore and interact with BLUE HOUSE System
-    REST API.
+  description: This page allows you to explore and interact with EQA System REST API.
   termsOfService: http://swagger.io/terms/
-  title: BLUE HOUSE API
+  title: EQA API
   version: "1.0"
 paths:
   /auth/login:
@@ -47,6 +54,52 @@ paths:
       summary: Login
       tags:
       - Auth
+  /programs:
+    get:
+      consumes:
+      - application/json
+      description: Get Program Data
+      parameters:
+      - description: source_id
+        in: query
+        name: source_id
+        type: string
+      - description: rating_id
+        in: query
+        name: rating_id
+        type: string
+      - description: month
+        in: query
+        name: month
+        type: string
+      - description: year
+        in: query
+        name: year
+        type: string
+      - description: Page description
+        in: query
+        name: page
+        type: string
+      - description: Limit description
+        in: query
+        name: limit
+        type: string
+      - description: Search description
+        in: query
+        name: search
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.ApiResponse'
+      security:
+      - JWT: []
+      summary: Get All
+      tags:
+      - Program
 securityDefinitions:
   JWT:
     in: header

@@ -7,7 +7,11 @@ export default {
     './app.vue',
   ],
   theme: {
-    extend: {},
+    extend: {
+      width: {
+        '1/15': '6.6667%', // Approximately 6.67% for each of 15 columns
+      },
+    },
   },
   plugins: [],
 }

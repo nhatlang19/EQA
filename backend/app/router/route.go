@@ -1,9 +1,7 @@
 package router
 
 import (
-	"EQA/backend/app/middleware"
 	"EQA/backend/config"
-	"net/http"
 
 	swaggerfiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
@@ -19,18 +17,19 @@ func Init(init *config.Initialization) *gin.Engine {
 	router.Use(gin.Recovery())
 	router.Use(cors.New(cors.Config{
 		AllowAllOrigins: true,
-		AllowMethods:    []string{"GET", "POST", "DELETE", "OPTIONS", "PUT"},
+		AllowMethods:    []string{"GET", "POST", "DELETE", "OPTIONS", "PUT", "PATCH"},
 		AllowHeaders: []string{"Authorization", "Content-Type", "Upgrade", "Origin",
 			"Connection", "Accept-Encoding", "Accept-Language", "Host", "Access-Control-Request-Method", "Access-Control-Request-Headers"},
 	}))
 
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
-	router.StaticFS("/", http.Dir("../frontend/.next"))
+	// router.StaticFS("/", http.Dir("../frontend/.next"))
 
-	router.Use(middleware.JWTMiddleware())
+	// router.Use(middleware.JWTMiddleware())
 	apiGroup := router.Group("/api")
 
 	SetupAuthRouter(apiGroup, init.AuthCtrl)
+	SetupProgram(apiGroup, init.ProgramCtrl)
 
 	return router
 }
