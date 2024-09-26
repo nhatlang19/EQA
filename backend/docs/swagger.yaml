@@ -1,0 +1,55 @@
+definitions:
+  dto.LoginReq:
+    properties:
+      password:
+        type: string
+      username:
+        type: string
+    required:
+    - password
+    - username
+    type: object
+  dto.LoginResp:
+    properties:
+      accessToken:
+        type: string
+    type: object
+info:
+  contact:
+    email: nguyennb@teecom.vn
+    name: API Support
+    url: http://www.swagger.io/support
+  description: This page allows you to explore and interact with BLUE HOUSE System
+    REST API.
+  termsOfService: http://swagger.io/terms/
+  title: BLUE HOUSE API
+  version: "1.0"
+paths:
+  /auth/login:
+    post:
+      consumes:
+      - application/json
+      description: Login for user
+      parameters:
+      - description: Login Data
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/dto.LoginReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.LoginResp'
+      summary: Login
+      tags:
+      - Auth
+securityDefinitions:
+  JWT:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"
