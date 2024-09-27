@@ -8,6 +8,7 @@ import (
 
 type ProgramController interface {
 	GetAll(c *gin.Context)
+	GetOne(c *gin.Context)
 }
 
 type ProgramControllerImpl struct {
@@ -42,4 +43,20 @@ func ProgramControllerInit(service service.ProgramService) *ProgramControllerImp
 // @Param search query string false "Search description"
 func (bh ProgramControllerImpl) GetAll(c *gin.Context) {
 	bh.svc.GetAll(c)
+}
+
+// @Summary Get program
+// @Schemes
+// @Description Get program by ID
+// @Tags Program
+// @Accept json
+// @Produce json
+// @securityDefinitions.apiKey Authorization
+// @in header
+// @name Authorization
+// @Security JWT
+// @Success 200 {object} model.Program
+// @Router /programs/{ID} [get]
+func (bh ProgramControllerImpl) GetOne(c *gin.Context) {
+	bh.svc.GetOne(c)
 }

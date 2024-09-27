@@ -6,8 +6,8 @@
           <nuxt-link to="/" class="text-xl font-semibold text-gray-800">EQA PROGRAM</nuxt-link>
         </div>
         <div class="hidden md:flex md:space-x-8">
-          <nuxt-link to="/" class="text-gray-800 hover:text-blue-600">Home</nuxt-link>
-          <nuxt-link to="/reminders/plan-result" class="text-gray-800 hover:text-blue-600">Reminder</nuxt-link>
+          <nuxt-link to="/" class="text-gray-800 hover:text-blue-600">Trang chủ</nuxt-link>
+          <nuxt-link to="/programs" class="text-gray-800 hover:text-blue-600">Chương trình</nuxt-link>
         </div>
         <div class="md:hidden">
           <button @click="toggleMenu" class="text-gray-800 focus:outline-none">
@@ -18,8 +18,8 @@
         </div>
       </nav>
       <div v-if="menuOpen" class="md:hidden bg-white shadow-md">
-        <nuxt-link to="/" class="block px-4 py-2 text-gray-800 hover:bg-gray-200">Home</nuxt-link>
-        <nuxt-link to="/reminders/plan-result" class="block px-4 py-2 text-gray-800 hover:bg-gray-200">Reminder</nuxt-link>
+        <nuxt-link to="/" class="block px-4 py-2 text-gray-800 hover:bg-gray-200">Trang chủ</nuxt-link>
+        <nuxt-link to="/programs" class="block px-4 py-2 text-gray-800 hover:bg-gray-200">Chương trình</nuxt-link>
       </div>
     </header>
   </template>

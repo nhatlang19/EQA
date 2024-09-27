@@ -2,8 +2,11 @@ package config
 
 import (
 	"EQA/backend/app/controller"
+	"EQA/backend/app/pkg/mail"
 	"EQA/backend/app/repository"
 	"EQA/backend/app/service"
+
+	"github.com/robfig/cron/v3"
 )
 
 type Initialization struct {
@@ -11,8 +14,13 @@ type Initialization struct {
 	authSvc  service.AuthService
 	AuthCtrl controller.AuthController
 
+	mailSvc mail.MailService
+
 	programRepo repository.ProgramRepository
+	programSvc  service.ProgramService
 	ProgramCtrl controller.ProgramController
+
+	Cron *cron.Cron
 }
 
 func NewInitialization(
@@ -20,7 +28,10 @@ func NewInitialization(
 	authService service.AuthService,
 	authCtrl controller.AuthController,
 	programRepo repository.ProgramRepository,
+	programSvc service.ProgramService,
 	programCtrl controller.ProgramController,
+	mailSvc mail.MailService,
+	cron *cron.Cron,
 ) *Initialization {
 	return &Initialization{
 		userRepo:    userRepo,
@@ -28,5 +39,8 @@ func NewInitialization(
 		AuthCtrl:    authCtrl,
 		programRepo: programRepo,
 		ProgramCtrl: programCtrl,
+		programSvc:  programSvc,
+		mailSvc:     mailSvc,
+		Cron:        cron,
 	}
 }

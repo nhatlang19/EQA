@@ -10,6 +10,9 @@
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
+    "@heroicons/vue": "^2.1.5",
+    "@vuepic/vue-datepicker": "^9.0.3",
+    "date-fns": "^4.1.0",
     "moment": "^2.30.1",
     "nuxt": "^3.13.0",
     "vue": "latest",

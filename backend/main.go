@@ -34,7 +34,10 @@ func main() {
 	docs.SwaggerInfo.BasePath = "/api/"
 
 	init := config.Init()
+	go init.Cron.Start()
+	defer init.Cron.Stop()
+
 	app := router.Init(init)
 
-	app.Run(":" + port)
+	app.Run("0.0.0.0:" + port)
 }

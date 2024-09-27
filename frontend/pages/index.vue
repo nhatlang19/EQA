@@ -18,10 +18,10 @@ import Card from '~/components/Card.vue';
 
 const cards = [
   {
-    title: 'Reminder',
+    title: 'Chương trình',
     description: '',
     image: 'https://via.placeholder.com/300x200?text=Card+1',
-    link: '/reminders/plan-result'
+    link: '/programs'
   },
 ];
 

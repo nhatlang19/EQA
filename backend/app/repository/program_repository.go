@@ -9,6 +9,7 @@ import (
 
 type ProgramRepository interface {
 	FindAll() ([]model.Program, error)
+	FindOne(id int) (model.Program, error)
 }
 
 type ProgramRepositoryImpl struct {
@@ -41,11 +42,12 @@ func seedDataProgram(db *gorm.DB) {
 			db.Create(&model.ProgramCode{ID: 9, Name: "EB02C", ProgramId: 9, Year: 2024})
 			db.Create(&model.ProgramCode{ID: 10, Name: "EB03C", ProgramId: 9, Year: 2024})
 			db.Create(&model.ProgramCode{ID: 11, Name: "QE1021 CK5", ProgramId: 10, Year: 2024})
-			db.Create(&model.ProgramCode{ID: 12, Name: "IM15C", ProgramId: 11, Year: 2024})
+			db.Create(&model.ProgramCode{ID: 12, Name: "IM16C", ProgramId: 11, Year: 2024})
 
 			db.Create(&model.ProgramCodeReminder{ProgramCodeId: 1, Sample: 1, IsDefault: true, DateOfReturn: time.Date(2024, time.January, 1, 12, 0, 0, 0, time.UTC)})
 			db.Create(&model.ProgramCodeReminder{ProgramCodeId: 1, Sample: 2, IsDefault: true, DateOfReturn: time.Date(2024, time.April, 1, 12, 0, 0, 0, time.UTC)})
 			db.Create(&model.ProgramCodeReminder{ProgramCodeId: 1, Sample: 3, IsDefault: true, DateOfReturn: time.Date(2024, time.July, 1, 12, 0, 0, 0, time.UTC)})
+			db.Create(&model.ProgramCodeReminder{ProgramCodeId: 1, Sample: 4, IsDefault: true, DateOfReturn: time.Date(2024, time.October, 1, 12, 0, 0, 0, time.UTC)})
 
 			db.Create(&model.ProgramCodeReminder{ProgramCodeId: 2, Sample: 1, IsDefault: true, DateOfReturn: time.Date(2024, time.January, 1, 12, 0, 0, 0, time.UTC)})
 			db.Create(&model.ProgramCodeReminder{ProgramCodeId: 2, Sample: 2, IsDefault: true, DateOfReturn: time.Date(2024, time.January, 1, 12, 0, 0, 0, time.UTC)})
@@ -157,4 +159,15 @@ func (u ProgramRepositoryImpl) FindAll() ([]model.Program, error) {
 		return []model.Program{}, err
 	}
 	return data, nil
+}
+
+func (u ProgramRepositoryImpl) FindOne(id int) (model.Program, error) {
+	result := model.Program{
+		ID: id,
+	}
+	err := u.db.Preload("ProgramCodes.ProgramCodeReminders").First(&result).Error
+	if err != nil {
+		return model.Program{}, err
+	}
+	return result, nil
 }

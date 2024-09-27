@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            font-size: 16px;
+        }
+    </style>
+</head>
+
+<body>
+    <p><strong>Thân gửi {{.CandidateName}},</strong></p>
+    <p>Chúng tôi cảm ơn bạn đã quan tâm và nộp hồ sơ ứng tuyển cho vị trí {{.Position}} tại Teecom. </p>
+    <p>Để đánh giá mức độ phù hợp của ứng viên chính xác và chi tiết hơn, chúng tôi có bài test dành cho bạn, như sau:
+    </p>
+    <ul>
+        <li>Nội dung bài test: xem file đính kèm. </li>
+        <li>Thời hạn thực hiện: trước {{.Deadline}} </li>
+        <li>Lưu ý: {{.Note}} </li>
+    </ul>
+    <p> Bạn vui lòng xác nhận đã nhận được email này và thực hiện bài test theo các thông tin nêu trên. Trong trường hợp
+        có bất kỳ thắc mắc hoặc cần thêm thông tin, bạn hãy liên hệ {{.Contact}} để được hỗ trợ. </p>
+    <p> Rất mong có cơ hội được hợp tác cùng bạn và chúc bạn một ngày tốt lành.</p>
+    <p> Trân trọng!</p>
+</body>
+
+</html>

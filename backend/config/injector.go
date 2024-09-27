@@ -5,15 +5,18 @@ package config
 
 import (
 	"EQA/backend/app/controller"
+	"EQA/backend/app/pkg/cloud/sqs"
+	"EQA/backend/app/pkg/mail"
 	"EQA/backend/app/repository"
 	"EQA/backend/app/service"
-
-	"EQA/backend/app/pkg/cloud/sqs"
+	cron "EQA/backend/cron"
 
 	"github.com/google/wire"
 )
 
 var db = wire.NewSet(ConnectToDB)
+
+var cronjob = wire.NewSet(cron.NewCron)
 
 var sqsClient = wire.NewSet(sqs.NewSQS,
 	wire.Bind(new(sqs.MessageClient), new(*sqs.SQS)),
@@ -43,6 +46,10 @@ var programCtrlSet = wire.NewSet(controller.ProgramControllerInit,
 	wire.Bind(new(controller.ProgramController), new(*controller.ProgramControllerImpl)),
 )
 
+var mailServiceSet = wire.NewSet(mail.MailServiceInit,
+	wire.Bind(new(mail.MailService), new(*mail.MailServiceImpl)),
+)
+
 func Init() *Initialization {
 	wire.Build(NewInitialization,
 		db,
@@ -50,8 +57,10 @@ func Init() *Initialization {
 		authServiceSet,
 		authCtrlSet,
 		programRepoSet,
-		programServiceSet,
 		programCtrlSet,
+		programServiceSet,
+		mailServiceSet,
+		cronjob,
 	)
 	return nil
 }
