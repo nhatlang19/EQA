@@ -14,6 +14,8 @@ type Initialization struct {
 	authSvc  service.AuthService
 	AuthCtrl controller.AuthController
 
+	providerRepo repository.ProviderRepository
+
 	mailSvc mail.MailService
 
 	programRepo repository.ProgramRepository
@@ -27,6 +29,7 @@ func NewInitialization(
 	userRepo repository.UserRepository,
 	authService service.AuthService,
 	authCtrl controller.AuthController,
+	providerRepo repository.ProviderRepository,
 	programRepo repository.ProgramRepository,
 	programSvc service.ProgramService,
 	programCtrl controller.ProgramController,
@@ -34,13 +37,14 @@ func NewInitialization(
 	cron *cron.Cron,
 ) *Initialization {
 	return &Initialization{
-		userRepo:    userRepo,
-		authSvc:     authService,
-		AuthCtrl:    authCtrl,
-		programRepo: programRepo,
-		ProgramCtrl: programCtrl,
-		programSvc:  programSvc,
-		mailSvc:     mailSvc,
-		Cron:        cron,
+		userRepo:     userRepo,
+		authSvc:      authService,
+		AuthCtrl:     authCtrl,
+		providerRepo: providerRepo,
+		programRepo:  programRepo,
+		ProgramCtrl:  programCtrl,
+		programSvc:   programSvc,
+		mailSvc:      mailSvc,
+		Cron:         cron,
 	}
 }

@@ -23,12 +23,13 @@ func Init() *Initialization {
 	userRepositoryImpl := repository.UserRepositoryInit(gormDB)
 	authServiceImpl := service.AuthServiceInit(userRepositoryImpl)
 	authControllerImpl := controller.AuthControllerInit(authServiceImpl)
+	providerRepositoryImpl := repository.ProviderRepositoryInit(gormDB)
 	programRepositoryImpl := repository.ProgramRepositoryInit(gormDB)
 	mailServiceImpl := mail.MailServiceInit()
 	programServiceImpl := service.ProgramServiceInit(programRepositoryImpl, mailServiceImpl)
 	programControllerImpl := controller.ProgramControllerInit(programServiceImpl)
 	cronCron := cron.NewCron(programServiceImpl)
-	initialization := NewInitialization(userRepositoryImpl, authServiceImpl, authControllerImpl, programRepositoryImpl, programServiceImpl, programControllerImpl, mailServiceImpl, cronCron)
+	initialization := NewInitialization(userRepositoryImpl, authServiceImpl, authControllerImpl, providerRepositoryImpl, programRepositoryImpl, programServiceImpl, programControllerImpl, mailServiceImpl, cronCron)
 	return initialization
 }
 
@@ -45,6 +46,8 @@ var userRepoSet = wire.NewSet(repository.UserRepositoryInit, wire.Bind(new(repos
 var authServiceSet = wire.NewSet(service.AuthServiceInit, wire.Bind(new(service.AuthService), new(*service.AuthServiceImpl)))
 
 var authCtrlSet = wire.NewSet(controller.AuthControllerInit, wire.Bind(new(controller.AuthController), new(*controller.AuthControllerImpl)))
+
+var providerRepoSet = wire.NewSet(repository.ProviderRepositoryInit, wire.Bind(new(repository.ProviderRepository), new(*repository.ProviderRepositoryImpl)))
 
 var programRepoSet = wire.NewSet(repository.ProgramRepositoryInit, wire.Bind(new(repository.ProgramRepository), new(*repository.ProgramRepositoryImpl)))
 

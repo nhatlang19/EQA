@@ -9,8 +9,8 @@ import (
 func NewCron(sv service.ProgramService) *cron.Cron {
 	c := cron.New()
 
-	// Add a cron job that runs every minute
-	c.AddFunc("* * * * *", func() {
+	// Daily 8 AM
+	c.AddFunc("0 8 * * *", func() {
 		sv.Reminder()
 	})
 

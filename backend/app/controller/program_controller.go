@@ -9,6 +9,7 @@ import (
 type ProgramController interface {
 	GetAll(c *gin.Context)
 	GetOne(c *gin.Context)
+	Reminder(c *gin.Context)
 }
 
 type ProgramControllerImpl struct {
@@ -59,4 +60,8 @@ func (bh ProgramControllerImpl) GetAll(c *gin.Context) {
 // @Router /programs/{ID} [get]
 func (bh ProgramControllerImpl) GetOne(c *gin.Context) {
 	bh.svc.GetOne(c)
+}
+
+func (bh ProgramControllerImpl) Reminder(c *gin.Context) {
+	bh.svc.Reminder()
 }

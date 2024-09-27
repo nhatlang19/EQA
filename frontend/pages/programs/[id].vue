@@ -13,7 +13,7 @@
       >
         Thêm Mã
       </button>
-    </div>
+    </div> 
     <div v-for="(code, index) in program.program_codes">
       <div class="flex items-center space-x-2">
         <h3 class="p-2">Mã: {{ code.name }}</h3>
@@ -52,8 +52,33 @@
               format="dd/MM/yyyy"
             ></VueDatePicker>
           </div>
+          <div class="flex items-center">
+            <input v-if="reminder.status == 0" type="checkbox" id="checkbox" checked class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 focus:ring-2" />
+            <input v-else type="checkbox" id="checkbox" @change="toggleCheckbox(reminder, 0)" class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 focus:ring-2" />
+            <label for="checkbox" class="ml-2 text-sm text-gray-700">N/A</label>
+          </div>
+          <div class="flex items-center">
+            <input v-if="reminder.status == 1" type="checkbox" id="checkbox" checked class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 focus:ring-2" />
+            <input v-else type="checkbox" id="checkbox" @change="toggleCheckbox(reminder, 1)" class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 focus:ring-2" />
+            <label for="checkbox" class="ml-2 text-sm text-gray-700">Đạt</label>
+          </div>
+          <div class="flex items-center">
+            <input v-if="reminder.status == 2" type="checkbox" id="checkbox" checked class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 focus:ring-2" />
+            <input v-else type="checkbox" id="checkbox" @change="toggleCheckbox(reminder, 2)" class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 focus:ring-2" />
+            <label for="checkbox" class="ml-2 text-sm text-gray-700">Không Đạt</label>
+          </div>
+          <div class="p-3" v-show="reminder.status == 0">
+             % đạt
+             <input
+                  type="number"
+                  min="1" max="100"
+                  v-model="reminder.percent_passed"
+                  required
+                  class="block w-full mt-1 p-2 border rounded-md focus:outline-none focus:ring focus:ring-blue-300"
+              />
+          </div>
           <div v-if="idx === code.program_code_reminders.length - 1" class="flex">
-            <PlusCircleIcon  class="w-6 h-6 text-blue-500" /> Add more
+            <a href="#" @click="addMore(code)" class="flex"><PlusCircleIcon  class="w-6 h-6 text-blue-500" /> Add more</a>
           </div>
         </div>
       </div>
@@ -197,5 +222,28 @@ const closeModalProgramCode = () => {
 const saveModalProgramCode = () => {
   isOpenEditProgramCode.value = false;
 };
+
+const toggleCheckbox = (reminder, value) => {
+  reminder.status = value;
+};
+
+const addMore = (code) => {
+  let sample = 1;
+  if (code.program_code_reminders.length > 0) {
+    sample = code.program_code_reminders[code.program_code_reminders.length - 1].sample + 1;
+  }
+  let obj = {
+    "program_code_id": code.id,
+    "sample": sample,
+    "date_of_receive": moment(),
+    "date_of_return": moment(),
+    "is_default": true,
+    "status": 0,
+    "percent_passed": 0
+  };
+  code.program_code_reminders = [
+    ...code.program_code_reminders, obj
+  ]
+}
 
 </script>

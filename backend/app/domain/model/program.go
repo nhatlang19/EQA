@@ -6,6 +6,8 @@ type Program struct {
 	ID           int           `gorm:"column:id; primary_key; not null" json:"id"`
 	Name         string        `gorm:"column:name;" json:"name"`
 	ProgramCodes []ProgramCode `gorm:"foreignkey:ProgramId" json:"program_codes"`
+	ProviderId   int           `gorm:"column:provider_id;" json:"provider_id"`
+	Provider     Provider      `gorm:"foreignkey:ProviderId" json:"provider"`
 	BaseModel
 }
 

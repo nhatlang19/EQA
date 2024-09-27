@@ -13,7 +13,7 @@ const docTemplate = `{
         "contact": {
             "name": "API Support",
             "url": "http://www.swagger.io/support",
-            "email": "nguyennb@teecom.vn"
+            "email": "nhatlang19@gmail.com"
         },
         "version": "{{.Version}}"
     },
@@ -125,6 +125,34 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/programs/{ID}": {
+            "get": {
+                "security": [
+                    {
+                        "JWT": []
+                    }
+                ],
+                "description": "Get program by ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Program"
+                ],
+                "summary": "Get program",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.Program"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -159,6 +187,116 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "accessToken": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.Program": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "program_codes": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.ProgramCode"
+                    }
+                },
+                "provider": {
+                    "$ref": "#/definitions/model.Provider"
+                },
+                "provider_id": {
+                    "type": "integer"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.ProgramCode": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "program_code_reminders": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.ProgramCodeReminder"
+                    }
+                },
+                "program_id": {
+                    "type": "integer"
+                },
+                "updated_at": {
+                    "type": "string"
+                },
+                "year": {
+                    "type": "integer"
+                }
+            }
+        },
+        "model.ProgramCodeReminder": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "date_of_receive": {
+                    "type": "string"
+                },
+                "date_of_return": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "is_default": {
+                    "type": "boolean"
+                },
+                "percent_passed": {
+                    "type": "integer"
+                },
+                "program_code_id": {
+                    "type": "integer"
+                },
+                "sample": {
+                    "type": "integer"
+                },
+                "status": {
+                    "type": "integer"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.Provider": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "updated_at": {
                     "type": "string"
                 }
             }

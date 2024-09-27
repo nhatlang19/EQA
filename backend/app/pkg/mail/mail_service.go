@@ -12,19 +12,20 @@ import (
 )
 
 type MailService interface {
-	SendEmail(toEmail string, subject string, templatePath string, mailInfo any) error
+	SendEmail(toEmail string, subject string, bcc string, templatePath string, mailInfo any) error
 	SendEmailWithAttachments(toEmail string, subject string, templatePath string, mailInfo any, fileName string, fileBuffer []byte) error
 }
 
 type MailServiceImpl struct {
 }
 
-func (s MailServiceImpl) SendEmail(toEmail string, subject string, templatePath string, mailInfo any) error {
+func (s MailServiceImpl) SendEmail(toEmail string, subject string, bcc string, templatePath string, mailInfo any) error {
 	GMAIL_MAIL := os.Getenv("GMAIL_MAIL")
 	GMAIL_PASSWORD := os.Getenv("GMAIL_PASSWORD")
 
 	to := []string{
 		toEmail,
+		bcc,
 	}
 
 	smtpHost := "smtp.gmail.com"
@@ -38,12 +39,10 @@ func (s MailServiceImpl) SendEmail(toEmail string, subject string, templatePath 
 
 	mimeHeaders := "MIME-version: 1.0;\nContent-Type: text/html; charset=\"UTF-8\";\n\n"
 	body.Write([]byte(fmt.Sprintf("Subject: %s \n%s\n\n", subject, mimeHeaders)))
-
 	err := t.Execute(&body, mailInfo)
 	if err != nil {
 		return err
 	}
-
 	err = smtp.SendMail(smtpHost+":"+smtpPort, auth, GMAIL_MAIL, to, body.Bytes())
 	if err != nil {
 		return err

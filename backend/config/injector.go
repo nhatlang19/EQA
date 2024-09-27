@@ -34,6 +34,10 @@ var authCtrlSet = wire.NewSet(controller.AuthControllerInit,
 	wire.Bind(new(controller.AuthController), new(*controller.AuthControllerImpl)),
 )
 
+var providerRepoSet = wire.NewSet(repository.ProviderRepositoryInit,
+	wire.Bind(new(repository.ProviderRepository), new(*repository.ProviderRepositoryImpl)),
+)
+
 var programRepoSet = wire.NewSet(repository.ProgramRepositoryInit,
 	wire.Bind(new(repository.ProgramRepository), new(*repository.ProgramRepositoryImpl)),
 )
@@ -56,6 +60,7 @@ func Init() *Initialization {
 		userRepoSet,
 		authServiceSet,
 		authCtrlSet,
+		providerRepoSet,
 		programRepoSet,
 		programCtrlSet,
 		programServiceSet,

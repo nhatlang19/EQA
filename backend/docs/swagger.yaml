@@ -22,9 +22,81 @@ definitions:
       accessToken:
         type: string
     type: object
+  model.Program:
+    properties:
+      created_at:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      program_codes:
+        items:
+          $ref: '#/definitions/model.ProgramCode'
+        type: array
+      provider:
+        $ref: '#/definitions/model.Provider'
+      provider_id:
+        type: integer
+      updated_at:
+        type: string
+    type: object
+  model.ProgramCode:
+    properties:
+      created_at:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      program_code_reminders:
+        items:
+          $ref: '#/definitions/model.ProgramCodeReminder'
+        type: array
+      program_id:
+        type: integer
+      updated_at:
+        type: string
+      year:
+        type: integer
+    type: object
+  model.ProgramCodeReminder:
+    properties:
+      created_at:
+        type: string
+      date_of_receive:
+        type: string
+      date_of_return:
+        type: string
+      id:
+        type: integer
+      is_default:
+        type: boolean
+      percent_passed:
+        type: integer
+      program_code_id:
+        type: integer
+      sample:
+        type: integer
+      status:
+        type: integer
+      updated_at:
+        type: string
+    type: object
+  model.Provider:
+    properties:
+      created_at:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      updated_at:
+        type: string
+    type: object
 info:
   contact:
-    email: nguyennb@teecom.vn
+    email: nhatlang19@gmail.com
     name: API Support
     url: http://www.swagger.io/support
   description: This page allows you to explore and interact with EQA System REST API.
@@ -98,6 +170,23 @@ paths:
       security:
       - JWT: []
       summary: Get All
+      tags:
+      - Program
+  /programs/{ID}:
+    get:
+      consumes:
+      - application/json
+      description: Get program by ID
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Program'
+      security:
+      - JWT: []
+      summary: Get program
       tags:
       - Program
 securityDefinitions:

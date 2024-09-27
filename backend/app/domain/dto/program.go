@@ -4,8 +4,15 @@ import (
 	model "EQA/backend/app/domain/model"
 )
 
-type ProgramResp struct {
-	ID           int                 `gorm:"column:id; primary_key; not null" json:"id"`
-	Name         string              `gorm:"column:name;" json:"name"`
-	ProgramCodes []model.ProgramCode `gorm:"foreignkey:ProgramId" json:"program_codes"`
+type ProgramReminderResp struct {
+	ProgramName string `json:"program_name"`
+	Code        string `json:"code"`
+	model.ProgramCodeReminder
+}
+
+type EmaiReminderPayload struct {
+	Name     string
+	Code     string
+	Deadline string
+	Sample   int
 }
