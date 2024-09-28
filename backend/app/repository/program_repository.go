@@ -3,6 +3,7 @@ package repository
 import (
 	dto "EQA/backend/app/domain/dto"
 	model "EQA/backend/app/domain/model"
+	"fmt"
 	"time"
 
 	"gorm.io/gorm"
@@ -12,6 +13,15 @@ type ProgramRepository interface {
 	FindAll() ([]model.Program, error)
 	FindOne(id int) (model.Program, error)
 	FindForReminder(num int) ([]dto.ProgramReminderResp, error)
+	Save(program *model.Program) (model.Program, error)
+
+	FindByCodeId(id int, codeId int) (model.ProgramCode, error)
+	SaveCode(programCode *model.ProgramCode) (model.ProgramCode, error)
+	CreateCode(programCode *model.ProgramCode) (model.ProgramCode, error)
+	DeleteCodeById(id int) error
+
+	SaveCodeDetail(data *model.ProgramCodeReminder) (model.ProgramCodeReminder, error)
+	DeleteDetailCodeById(id int) error
 }
 
 type ProgramRepositoryImpl struct {
@@ -46,29 +56,29 @@ func seedDataProgram(db *gorm.DB) {
 			db.Create(&model.ProgramCode{ID: 11, Name: "QE1021 CK5", ProgramId: 10, Year: 2024})
 			db.Create(&model.ProgramCode{ID: 12, Name: "IM16C", ProgramId: 11, Year: 2024})
 
-			db.Create(&model.ProgramCodeReminder{ProgramCodeId: 1, Sample: 1, IsDefault: true, DateOfReturn: time.Date(2024, time.January, 1, 12, 0, 0, 0, time.UTC)})
-			db.Create(&model.ProgramCodeReminder{ProgramCodeId: 1, Sample: 2, IsDefault: true, DateOfReturn: time.Date(2024, time.April, 1, 12, 0, 0, 0, time.UTC)})
-			db.Create(&model.ProgramCodeReminder{ProgramCodeId: 1, Sample: 3, IsDefault: true, DateOfReturn: time.Date(2024, time.July, 1, 12, 0, 0, 0, time.UTC)})
+			db.Create(&model.ProgramCodeReminder{ProgramCodeId: 1, Sample: 1, IsDefault: true, Status: 1, PercentPassed: 100, DateOfReturn: time.Date(2024, time.January, 1, 12, 0, 0, 0, time.UTC)})
+			db.Create(&model.ProgramCodeReminder{ProgramCodeId: 1, Sample: 2, IsDefault: true, Status: 1, PercentPassed: 100, DateOfReturn: time.Date(2024, time.April, 1, 12, 0, 0, 0, time.UTC)})
+			db.Create(&model.ProgramCodeReminder{ProgramCodeId: 1, Sample: 3, IsDefault: true, Status: 1, PercentPassed: 100, DateOfReturn: time.Date(2024, time.July, 1, 12, 0, 0, 0, time.UTC)})
 			db.Create(&model.ProgramCodeReminder{ProgramCodeId: 1, Sample: 4, IsDefault: true, DateOfReturn: time.Date(2024, time.October, 1, 12, 0, 0, 0, time.UTC)})
 
-			db.Create(&model.ProgramCodeReminder{ProgramCodeId: 2, Sample: 1, IsDefault: true, DateOfReturn: time.Date(2024, time.January, 1, 12, 0, 0, 0, time.UTC)})
-			db.Create(&model.ProgramCodeReminder{ProgramCodeId: 2, Sample: 2, IsDefault: true, DateOfReturn: time.Date(2024, time.January, 1, 12, 0, 0, 0, time.UTC)})
-			db.Create(&model.ProgramCodeReminder{ProgramCodeId: 2, Sample: 3, IsDefault: true, DateOfReturn: time.Date(2024, time.February, 1, 12, 0, 0, 0, time.UTC)})
-			db.Create(&model.ProgramCodeReminder{ProgramCodeId: 2, Sample: 4, IsDefault: true, DateOfReturn: time.Date(2024, time.February, 1, 12, 0, 0, 0, time.UTC)})
-			db.Create(&model.ProgramCodeReminder{ProgramCodeId: 2, Sample: 5, IsDefault: true, DateOfReturn: time.Date(2024, time.March, 1, 12, 0, 0, 0, time.UTC)})
-			db.Create(&model.ProgramCodeReminder{ProgramCodeId: 2, Sample: 6, IsDefault: true, DateOfReturn: time.Date(2024, time.March, 1, 12, 0, 0, 0, time.UTC)})
-			db.Create(&model.ProgramCodeReminder{ProgramCodeId: 2, Sample: 7, IsDefault: true, DateOfReturn: time.Date(2024, time.April, 1, 12, 0, 0, 0, time.UTC)})
-			db.Create(&model.ProgramCodeReminder{ProgramCodeId: 2, Sample: 8, IsDefault: true, DateOfReturn: time.Date(2024, time.April, 1, 12, 0, 0, 0, time.UTC)})
-			db.Create(&model.ProgramCodeReminder{ProgramCodeId: 2, Sample: 9, IsDefault: true, DateOfReturn: time.Date(2024, time.May, 1, 12, 0, 0, 0, time.UTC)})
-			db.Create(&model.ProgramCodeReminder{ProgramCodeId: 2, Sample: 10, IsDefault: true, DateOfReturn: time.Date(2024, time.May, 1, 12, 0, 0, 0, time.UTC)})
-			db.Create(&model.ProgramCodeReminder{ProgramCodeId: 2, Sample: 11, IsDefault: true, DateOfReturn: time.Date(2024, time.June, 1, 12, 0, 0, 0, time.UTC)})
-			db.Create(&model.ProgramCodeReminder{ProgramCodeId: 2, Sample: 12, IsDefault: true, DateOfReturn: time.Date(2024, time.June, 1, 12, 0, 0, 0, time.UTC)})
-			db.Create(&model.ProgramCodeReminder{ProgramCodeId: 2, Sample: 13, IsDefault: true, DateOfReturn: time.Date(2024, time.July, 1, 12, 0, 0, 0, time.UTC)})
-			db.Create(&model.ProgramCodeReminder{ProgramCodeId: 2, Sample: 14, IsDefault: true, DateOfReturn: time.Date(2024, time.July, 1, 12, 0, 0, 0, time.UTC)})
-			db.Create(&model.ProgramCodeReminder{ProgramCodeId: 2, Sample: 15, IsDefault: true, DateOfReturn: time.Date(2024, time.August, 1, 12, 0, 0, 0, time.UTC)})
-			db.Create(&model.ProgramCodeReminder{ProgramCodeId: 2, Sample: 16, IsDefault: true, DateOfReturn: time.Date(2024, time.August, 1, 12, 0, 0, 0, time.UTC)})
-			db.Create(&model.ProgramCodeReminder{ProgramCodeId: 2, Sample: 17, IsDefault: true, DateOfReturn: time.Date(2024, time.September, 30, 12, 0, 0, 0, time.UTC)})
-			db.Create(&model.ProgramCodeReminder{ProgramCodeId: 2, Sample: 18, IsDefault: true, DateOfReturn: time.Date(2024, time.September, 30, 12, 0, 0, 0, time.UTC)})
+			db.Create(&model.ProgramCodeReminder{ProgramCodeId: 2, Sample: 1, IsDefault: true, Status: 1, PercentPassed: 100, DateOfReturn: time.Date(2024, time.January, 1, 12, 0, 0, 0, time.UTC)})
+			db.Create(&model.ProgramCodeReminder{ProgramCodeId: 2, Sample: 2, IsDefault: true, Status: 1, PercentPassed: 100, DateOfReturn: time.Date(2024, time.January, 1, 12, 0, 0, 0, time.UTC)})
+			db.Create(&model.ProgramCodeReminder{ProgramCodeId: 2, Sample: 3, IsDefault: true, Status: 1, PercentPassed: 100, DateOfReturn: time.Date(2024, time.February, 1, 12, 0, 0, 0, time.UTC)})
+			db.Create(&model.ProgramCodeReminder{ProgramCodeId: 2, Sample: 4, IsDefault: true, Status: 1, PercentPassed: 100, DateOfReturn: time.Date(2024, time.February, 1, 12, 0, 0, 0, time.UTC)})
+			db.Create(&model.ProgramCodeReminder{ProgramCodeId: 2, Sample: 5, IsDefault: true, Status: 1, PercentPassed: 100, DateOfReturn: time.Date(2024, time.March, 1, 12, 0, 0, 0, time.UTC)})
+			db.Create(&model.ProgramCodeReminder{ProgramCodeId: 2, Sample: 6, IsDefault: true, Status: 1, PercentPassed: 100, DateOfReturn: time.Date(2024, time.March, 1, 12, 0, 0, 0, time.UTC)})
+			db.Create(&model.ProgramCodeReminder{ProgramCodeId: 2, Sample: 7, IsDefault: true, Status: 1, PercentPassed: 100, DateOfReturn: time.Date(2024, time.April, 1, 12, 0, 0, 0, time.UTC)})
+			db.Create(&model.ProgramCodeReminder{ProgramCodeId: 2, Sample: 8, IsDefault: true, Status: 1, PercentPassed: 100, DateOfReturn: time.Date(2024, time.April, 1, 12, 0, 0, 0, time.UTC)})
+			db.Create(&model.ProgramCodeReminder{ProgramCodeId: 2, Sample: 9, IsDefault: true, Status: 1, PercentPassed: 100, DateOfReturn: time.Date(2024, time.May, 1, 12, 0, 0, 0, time.UTC)})
+			db.Create(&model.ProgramCodeReminder{ProgramCodeId: 2, Sample: 10, IsDefault: true, Status: 1, PercentPassed: 100, DateOfReturn: time.Date(2024, time.May, 1, 12, 0, 0, 0, time.UTC)})
+			db.Create(&model.ProgramCodeReminder{ProgramCodeId: 2, Sample: 11, IsDefault: true, Status: 1, PercentPassed: 100, DateOfReturn: time.Date(2024, time.June, 1, 12, 0, 0, 0, time.UTC)})
+			db.Create(&model.ProgramCodeReminder{ProgramCodeId: 2, Sample: 12, IsDefault: true, Status: 1, PercentPassed: 100, DateOfReturn: time.Date(2024, time.June, 1, 12, 0, 0, 0, time.UTC)})
+			db.Create(&model.ProgramCodeReminder{ProgramCodeId: 2, Sample: 13, IsDefault: true, Status: 1, PercentPassed: 100, DateOfReturn: time.Date(2024, time.July, 1, 12, 0, 0, 0, time.UTC)})
+			db.Create(&model.ProgramCodeReminder{ProgramCodeId: 2, Sample: 14, IsDefault: true, Status: 1, PercentPassed: 100, DateOfReturn: time.Date(2024, time.July, 1, 12, 0, 0, 0, time.UTC)})
+			db.Create(&model.ProgramCodeReminder{ProgramCodeId: 2, Sample: 15, IsDefault: true, Status: 1, PercentPassed: 100, DateOfReturn: time.Date(2024, time.August, 1, 12, 0, 0, 0, time.UTC)})
+			db.Create(&model.ProgramCodeReminder{ProgramCodeId: 2, Sample: 16, IsDefault: true, Status: 1, PercentPassed: 100, DateOfReturn: time.Date(2024, time.August, 1, 12, 0, 0, 0, time.UTC)})
+			db.Create(&model.ProgramCodeReminder{ProgramCodeId: 2, Sample: 17, IsDefault: true, Status: 1, PercentPassed: 100, DateOfReturn: time.Date(2024, time.September, 30, 12, 0, 0, 0, time.UTC)})
+			db.Create(&model.ProgramCodeReminder{ProgramCodeId: 2, Sample: 18, IsDefault: true, Status: 1, PercentPassed: 100, DateOfReturn: time.Date(2024, time.September, 30, 12, 0, 0, 0, time.UTC)})
 			db.Create(&model.ProgramCodeReminder{ProgramCodeId: 2, Sample: 19, IsDefault: true, DateOfReturn: time.Date(2024, time.October, 1, 12, 0, 0, 0, time.UTC)})
 			db.Create(&model.ProgramCodeReminder{ProgramCodeId: 2, Sample: 20, IsDefault: true, DateOfReturn: time.Date(2024, time.October, 1, 12, 0, 0, 0, time.UTC)})
 			db.Create(&model.ProgramCodeReminder{ProgramCodeId: 2, Sample: 21, IsDefault: true, DateOfReturn: time.Date(2024, time.November, 1, 12, 0, 0, 0, time.UTC)})
@@ -76,66 +86,66 @@ func seedDataProgram(db *gorm.DB) {
 			db.Create(&model.ProgramCodeReminder{ProgramCodeId: 2, Sample: 23, IsDefault: true, DateOfReturn: time.Date(2024, time.December, 1, 12, 0, 0, 0, time.UTC)})
 			db.Create(&model.ProgramCodeReminder{ProgramCodeId: 2, Sample: 24, IsDefault: true, DateOfReturn: time.Date(2024, time.December, 1, 12, 0, 0, 0, time.UTC)})
 
-			db.Create(&model.ProgramCodeReminder{ProgramCodeId: 3, Sample: 1, IsDefault: true, DateOfReturn: time.Date(2024, time.January, 1, 12, 0, 0, 0, time.UTC)})
-			db.Create(&model.ProgramCodeReminder{ProgramCodeId: 3, Sample: 2, IsDefault: true, DateOfReturn: time.Date(2024, time.February, 1, 12, 0, 0, 0, time.UTC)})
-			db.Create(&model.ProgramCodeReminder{ProgramCodeId: 3, Sample: 3, IsDefault: true, DateOfReturn: time.Date(2024, time.March, 1, 12, 0, 0, 0, time.UTC)})
-			db.Create(&model.ProgramCodeReminder{ProgramCodeId: 3, Sample: 4, IsDefault: true, DateOfReturn: time.Date(2024, time.April, 1, 12, 0, 0, 0, time.UTC)})
-			db.Create(&model.ProgramCodeReminder{ProgramCodeId: 3, Sample: 5, IsDefault: true, DateOfReturn: time.Date(2024, time.May, 1, 12, 0, 0, 0, time.UTC)})
-			db.Create(&model.ProgramCodeReminder{ProgramCodeId: 3, Sample: 6, IsDefault: true, DateOfReturn: time.Date(2024, time.June, 1, 12, 0, 0, 0, time.UTC)})
-			db.Create(&model.ProgramCodeReminder{ProgramCodeId: 3, Sample: 7, IsDefault: true, DateOfReturn: time.Date(2024, time.July, 1, 12, 0, 0, 0, time.UTC)})
-			db.Create(&model.ProgramCodeReminder{ProgramCodeId: 3, Sample: 8, IsDefault: true, DateOfReturn: time.Date(2024, time.August, 1, 12, 0, 0, 0, time.UTC)})
-			db.Create(&model.ProgramCodeReminder{ProgramCodeId: 3, Sample: 9, IsDefault: true, DateOfReturn: time.Date(2024, time.September, 1, 12, 0, 0, 0, time.UTC)})
+			db.Create(&model.ProgramCodeReminder{ProgramCodeId: 3, Sample: 1, IsDefault: true, Status: 1, PercentPassed: 100, DateOfReturn: time.Date(2024, time.January, 1, 12, 0, 0, 0, time.UTC)})
+			db.Create(&model.ProgramCodeReminder{ProgramCodeId: 3, Sample: 2, IsDefault: true, Status: 1, PercentPassed: 100, DateOfReturn: time.Date(2024, time.February, 1, 12, 0, 0, 0, time.UTC)})
+			db.Create(&model.ProgramCodeReminder{ProgramCodeId: 3, Sample: 3, IsDefault: true, Status: 1, PercentPassed: 100, DateOfReturn: time.Date(2024, time.March, 1, 12, 0, 0, 0, time.UTC)})
+			db.Create(&model.ProgramCodeReminder{ProgramCodeId: 3, Sample: 4, IsDefault: true, Status: 1, PercentPassed: 100, DateOfReturn: time.Date(2024, time.April, 1, 12, 0, 0, 0, time.UTC)})
+			db.Create(&model.ProgramCodeReminder{ProgramCodeId: 3, Sample: 5, IsDefault: true, Status: 1, PercentPassed: 100, DateOfReturn: time.Date(2024, time.May, 1, 12, 0, 0, 0, time.UTC)})
+			db.Create(&model.ProgramCodeReminder{ProgramCodeId: 3, Sample: 6, IsDefault: true, Status: 1, PercentPassed: 100, DateOfReturn: time.Date(2024, time.June, 1, 12, 0, 0, 0, time.UTC)})
+			db.Create(&model.ProgramCodeReminder{ProgramCodeId: 3, Sample: 7, IsDefault: true, Status: 1, PercentPassed: 100, DateOfReturn: time.Date(2024, time.July, 1, 12, 0, 0, 0, time.UTC)})
+			db.Create(&model.ProgramCodeReminder{ProgramCodeId: 3, Sample: 8, IsDefault: true, Status: 1, PercentPassed: 100, DateOfReturn: time.Date(2024, time.August, 1, 12, 0, 0, 0, time.UTC)})
+			db.Create(&model.ProgramCodeReminder{ProgramCodeId: 3, Sample: 9, IsDefault: true, Status: 1, PercentPassed: 100, DateOfReturn: time.Date(2024, time.September, 1, 12, 0, 0, 0, time.UTC)})
 			db.Create(&model.ProgramCodeReminder{ProgramCodeId: 3, Sample: 10, IsDefault: true, DateOfReturn: time.Date(2024, time.October, 1, 12, 0, 0, 0, time.UTC)})
 			db.Create(&model.ProgramCodeReminder{ProgramCodeId: 3, Sample: 11, IsDefault: true, DateOfReturn: time.Date(2024, time.November, 1, 12, 0, 0, 0, time.UTC)})
 			db.Create(&model.ProgramCodeReminder{ProgramCodeId: 3, Sample: 12, IsDefault: true, DateOfReturn: time.Date(2024, time.December, 1, 12, 0, 0, 0, time.UTC)})
 
-			db.Create(&model.ProgramCodeReminder{ProgramCodeId: 4, Sample: 1, IsDefault: true, DateOfReturn: time.Date(2024, time.February, 1, 12, 0, 0, 0, time.UTC)})
-			db.Create(&model.ProgramCodeReminder{ProgramCodeId: 4, Sample: 2, IsDefault: true, DateOfReturn: time.Date(2024, time.May, 1, 12, 0, 0, 0, time.UTC)})
+			db.Create(&model.ProgramCodeReminder{ProgramCodeId: 4, Sample: 1, IsDefault: true, Status: 1, PercentPassed: 100, DateOfReturn: time.Date(2024, time.February, 1, 12, 0, 0, 0, time.UTC)})
+			db.Create(&model.ProgramCodeReminder{ProgramCodeId: 4, Sample: 2, IsDefault: true, Status: 1, PercentPassed: 100, DateOfReturn: time.Date(2024, time.May, 1, 12, 0, 0, 0, time.UTC)})
 			db.Create(&model.ProgramCodeReminder{ProgramCodeId: 4, Sample: 3, IsDefault: true, DateOfReturn: time.Date(2024, time.September, 30, 12, 0, 0, 0, time.UTC)})
 
-			db.Create(&model.ProgramCodeReminder{ProgramCodeId: 5, Sample: 1, IsDefault: true, DateOfReturn: time.Date(2024, time.January, 1, 12, 0, 0, 0, time.UTC)})
-			db.Create(&model.ProgramCodeReminder{ProgramCodeId: 5, Sample: 2, IsDefault: true, DateOfReturn: time.Date(2024, time.April, 1, 12, 0, 0, 0, time.UTC)})
-			db.Create(&model.ProgramCodeReminder{ProgramCodeId: 5, Sample: 3, IsDefault: true, DateOfReturn: time.Date(2024, time.July, 1, 12, 0, 0, 0, time.UTC)})
+			db.Create(&model.ProgramCodeReminder{ProgramCodeId: 5, Sample: 1, IsDefault: true, Status: 1, PercentPassed: 100, DateOfReturn: time.Date(2024, time.January, 1, 12, 0, 0, 0, time.UTC)})
+			db.Create(&model.ProgramCodeReminder{ProgramCodeId: 5, Sample: 2, IsDefault: true, Status: 1, PercentPassed: 100, DateOfReturn: time.Date(2024, time.April, 1, 12, 0, 0, 0, time.UTC)})
+			db.Create(&model.ProgramCodeReminder{ProgramCodeId: 5, Sample: 3, IsDefault: true, Status: 1, PercentPassed: 100, DateOfReturn: time.Date(2024, time.July, 1, 12, 0, 0, 0, time.UTC)})
 			db.Create(&model.ProgramCodeReminder{ProgramCodeId: 5, Sample: 4, IsDefault: true, DateOfReturn: time.Date(2024, time.October, 1, 12, 0, 0, 0, time.UTC)})
 
-			db.Create(&model.ProgramCodeReminder{ProgramCodeId: 6, Sample: 1, IsDefault: true, DateOfReturn: time.Date(2024, time.June, 1, 12, 0, 0, 0, time.UTC)})
+			db.Create(&model.ProgramCodeReminder{ProgramCodeId: 6, Sample: 1, IsDefault: true, Status: 1, PercentPassed: 100, DateOfReturn: time.Date(2024, time.June, 1, 12, 0, 0, 0, time.UTC)})
 			db.Create(&model.ProgramCodeReminder{ProgramCodeId: 6, Sample: 2, IsDefault: true, DateOfReturn: time.Date(2024, time.November, 1, 12, 0, 0, 0, time.UTC)})
 
-			db.Create(&model.ProgramCodeReminder{ProgramCodeId: 7, Sample: 1, IsDefault: true, DateOfReturn: time.Date(2024, time.February, 1, 12, 0, 0, 0, time.UTC)})
+			db.Create(&model.ProgramCodeReminder{ProgramCodeId: 7, Sample: 1, IsDefault: true, Status: 1, PercentPassed: 100, DateOfReturn: time.Date(2024, time.February, 1, 12, 0, 0, 0, time.UTC)})
 			db.Create(&model.ProgramCodeReminder{ProgramCodeId: 7, Sample: 2, IsDefault: true, DateOfReturn: time.Date(2024, time.June, 1, 12, 0, 0, 0, time.UTC)})
 			db.Create(&model.ProgramCodeReminder{ProgramCodeId: 7, Sample: 3, IsDefault: true, DateOfReturn: time.Date(2024, time.September, 1, 12, 0, 0, 0, time.UTC)})
 
-			db.Create(&model.ProgramCodeReminder{ProgramCodeId: 8, Sample: 1, IsDefault: true, DateOfReturn: time.Date(2024, time.March, 1, 12, 0, 0, 0, time.UTC)})
-			db.Create(&model.ProgramCodeReminder{ProgramCodeId: 8, Sample: 2, IsDefault: true, DateOfReturn: time.Date(2024, time.May, 1, 12, 0, 0, 0, time.UTC)})
-			db.Create(&model.ProgramCodeReminder{ProgramCodeId: 8, Sample: 3, IsDefault: true, DateOfReturn: time.Date(2024, time.August, 1, 12, 0, 0, 0, time.UTC)})
+			db.Create(&model.ProgramCodeReminder{ProgramCodeId: 8, Sample: 1, IsDefault: true, Status: 1, PercentPassed: 100, DateOfReturn: time.Date(2024, time.March, 1, 12, 0, 0, 0, time.UTC)})
+			db.Create(&model.ProgramCodeReminder{ProgramCodeId: 8, Sample: 2, IsDefault: true, Status: 1, PercentPassed: 100, DateOfReturn: time.Date(2024, time.May, 1, 12, 0, 0, 0, time.UTC)})
+			db.Create(&model.ProgramCodeReminder{ProgramCodeId: 8, Sample: 3, IsDefault: true, Status: 1, PercentPassed: 100, DateOfReturn: time.Date(2024, time.August, 1, 12, 0, 0, 0, time.UTC)})
 			db.Create(&model.ProgramCodeReminder{ProgramCodeId: 8, Sample: 4, IsDefault: true, DateOfReturn: time.Date(2024, time.November, 1, 12, 0, 0, 0, time.UTC)})
 
-			db.Create(&model.ProgramCodeReminder{ProgramCodeId: 9, Sample: 7, IsDefault: true, DateOfReturn: time.Date(2024, time.January, 1, 12, 0, 0, 0, time.UTC)})
-			db.Create(&model.ProgramCodeReminder{ProgramCodeId: 9, Sample: 8, IsDefault: true, DateOfReturn: time.Date(2024, time.February, 1, 12, 0, 0, 0, time.UTC)})
-			db.Create(&model.ProgramCodeReminder{ProgramCodeId: 9, Sample: 9, IsDefault: true, DateOfReturn: time.Date(2024, time.March, 1, 12, 0, 0, 0, time.UTC)})
-			db.Create(&model.ProgramCodeReminder{ProgramCodeId: 9, Sample: 10, IsDefault: true, DateOfReturn: time.Date(2024, time.April, 1, 12, 0, 0, 0, time.UTC)})
-			db.Create(&model.ProgramCodeReminder{ProgramCodeId: 9, Sample: 11, IsDefault: true, DateOfReturn: time.Date(2024, time.May, 1, 12, 0, 0, 0, time.UTC)})
-			db.Create(&model.ProgramCodeReminder{ProgramCodeId: 9, Sample: 12, IsDefault: true, DateOfReturn: time.Date(2024, time.June, 1, 12, 0, 0, 0, time.UTC)})
-			db.Create(&model.ProgramCodeReminder{ProgramCodeId: 10, Sample: 1, IsDefault: true, DateOfReturn: time.Date(2024, time.July, 1, 12, 0, 0, 0, time.UTC)})
-			db.Create(&model.ProgramCodeReminder{ProgramCodeId: 10, Sample: 2, IsDefault: true, DateOfReturn: time.Date(2024, time.August, 1, 12, 0, 0, 0, time.UTC)})
-			db.Create(&model.ProgramCodeReminder{ProgramCodeId: 10, Sample: 3, IsDefault: true, DateOfReturn: time.Date(2024, time.September, 1, 12, 0, 0, 0, time.UTC)})
+			db.Create(&model.ProgramCodeReminder{ProgramCodeId: 9, Sample: 7, IsDefault: true, Status: 1, PercentPassed: 100, DateOfReturn: time.Date(2024, time.January, 1, 12, 0, 0, 0, time.UTC)})
+			db.Create(&model.ProgramCodeReminder{ProgramCodeId: 9, Sample: 8, IsDefault: true, Status: 1, PercentPassed: 100, DateOfReturn: time.Date(2024, time.February, 1, 12, 0, 0, 0, time.UTC)})
+			db.Create(&model.ProgramCodeReminder{ProgramCodeId: 9, Sample: 9, IsDefault: true, Status: 1, PercentPassed: 100, DateOfReturn: time.Date(2024, time.March, 1, 12, 0, 0, 0, time.UTC)})
+			db.Create(&model.ProgramCodeReminder{ProgramCodeId: 9, Sample: 10, IsDefault: true, Status: 1, PercentPassed: 100, DateOfReturn: time.Date(2024, time.April, 1, 12, 0, 0, 0, time.UTC)})
+			db.Create(&model.ProgramCodeReminder{ProgramCodeId: 9, Sample: 11, IsDefault: true, Status: 1, PercentPassed: 100, DateOfReturn: time.Date(2024, time.May, 1, 12, 0, 0, 0, time.UTC)})
+			db.Create(&model.ProgramCodeReminder{ProgramCodeId: 9, Sample: 12, IsDefault: true, Status: 1, PercentPassed: 100, DateOfReturn: time.Date(2024, time.June, 1, 12, 0, 0, 0, time.UTC)})
+			db.Create(&model.ProgramCodeReminder{ProgramCodeId: 10, Sample: 1, IsDefault: true, Status: 1, PercentPassed: 100, DateOfReturn: time.Date(2024, time.July, 1, 12, 0, 0, 0, time.UTC)})
+			db.Create(&model.ProgramCodeReminder{ProgramCodeId: 10, Sample: 2, IsDefault: true, Status: 1, PercentPassed: 100, DateOfReturn: time.Date(2024, time.August, 1, 12, 0, 0, 0, time.UTC)})
+			db.Create(&model.ProgramCodeReminder{ProgramCodeId: 10, Sample: 3, IsDefault: true, Status: 1, PercentPassed: 100, DateOfReturn: time.Date(2024, time.September, 1, 12, 0, 0, 0, time.UTC)})
 			db.Create(&model.ProgramCodeReminder{ProgramCodeId: 10, Sample: 4, IsDefault: true, DateOfReturn: time.Date(2024, time.October, 1, 12, 0, 0, 0, time.UTC)})
 			db.Create(&model.ProgramCodeReminder{ProgramCodeId: 10, Sample: 5, IsDefault: true, DateOfReturn: time.Date(2024, time.November, 1, 12, 0, 0, 0, time.UTC)})
 			db.Create(&model.ProgramCodeReminder{ProgramCodeId: 10, Sample: 6, IsDefault: true, DateOfReturn: time.Date(2024, time.December, 1, 12, 0, 0, 0, time.UTC)})
 
-			db.Create(&model.ProgramCodeReminder{ProgramCodeId: 11, Sample: 1, IsDefault: true, DateOfReturn: time.Date(2024, time.March, 1, 12, 0, 0, 0, time.UTC)})
-			db.Create(&model.ProgramCodeReminder{ProgramCodeId: 11, Sample: 2, IsDefault: true, DateOfReturn: time.Date(2024, time.June, 1, 12, 0, 0, 0, time.UTC)})
+			db.Create(&model.ProgramCodeReminder{ProgramCodeId: 11, Sample: 1, IsDefault: true, Status: 1, PercentPassed: 100, DateOfReturn: time.Date(2024, time.March, 1, 12, 0, 0, 0, time.UTC)})
+			db.Create(&model.ProgramCodeReminder{ProgramCodeId: 11, Sample: 2, IsDefault: true, Status: 1, PercentPassed: 100, DateOfReturn: time.Date(2024, time.June, 1, 12, 0, 0, 0, time.UTC)})
 			db.Create(&model.ProgramCodeReminder{ProgramCodeId: 11, Sample: 3, IsDefault: true, DateOfReturn: time.Date(2024, time.September, 30, 12, 0, 0, 0, time.UTC)})
 			db.Create(&model.ProgramCodeReminder{ProgramCodeId: 11, Sample: 4, IsDefault: true, DateOfReturn: time.Date(2024, time.November, 1, 12, 0, 0, 0, time.UTC)})
 
-			db.Create(&model.ProgramCodeReminder{ProgramCodeId: 12, Sample: 1, IsDefault: true, DateOfReturn: time.Date(2024, time.January, 1, 12, 0, 0, 0, time.UTC)})
-			db.Create(&model.ProgramCodeReminder{ProgramCodeId: 12, Sample: 2, IsDefault: true, DateOfReturn: time.Date(2024, time.February, 1, 12, 0, 0, 0, time.UTC)})
-			db.Create(&model.ProgramCodeReminder{ProgramCodeId: 12, Sample: 3, IsDefault: true, DateOfReturn: time.Date(2024, time.March, 1, 12, 0, 0, 0, time.UTC)})
-			db.Create(&model.ProgramCodeReminder{ProgramCodeId: 12, Sample: 4, IsDefault: true, DateOfReturn: time.Date(2024, time.April, 1, 12, 0, 0, 0, time.UTC)})
-			db.Create(&model.ProgramCodeReminder{ProgramCodeId: 12, Sample: 5, IsDefault: true, DateOfReturn: time.Date(2024, time.May, 1, 12, 0, 0, 0, time.UTC)})
-			db.Create(&model.ProgramCodeReminder{ProgramCodeId: 12, Sample: 6, IsDefault: true, DateOfReturn: time.Date(2024, time.June, 1, 12, 0, 0, 0, time.UTC)})
-			db.Create(&model.ProgramCodeReminder{ProgramCodeId: 12, Sample: 7, IsDefault: true, DateOfReturn: time.Date(2024, time.July, 1, 12, 0, 0, 0, time.UTC)})
-			db.Create(&model.ProgramCodeReminder{ProgramCodeId: 12, Sample: 8, IsDefault: true, DateOfReturn: time.Date(2024, time.August, 1, 12, 0, 0, 0, time.UTC)})
+			db.Create(&model.ProgramCodeReminder{ProgramCodeId: 12, Sample: 1, IsDefault: true, Status: 1, PercentPassed: 100, DateOfReturn: time.Date(2024, time.January, 1, 12, 0, 0, 0, time.UTC)})
+			db.Create(&model.ProgramCodeReminder{ProgramCodeId: 12, Sample: 2, IsDefault: true, Status: 1, PercentPassed: 100, DateOfReturn: time.Date(2024, time.February, 1, 12, 0, 0, 0, time.UTC)})
+			db.Create(&model.ProgramCodeReminder{ProgramCodeId: 12, Sample: 3, IsDefault: true, Status: 1, PercentPassed: 100, DateOfReturn: time.Date(2024, time.March, 1, 12, 0, 0, 0, time.UTC)})
+			db.Create(&model.ProgramCodeReminder{ProgramCodeId: 12, Sample: 4, IsDefault: true, Status: 1, PercentPassed: 100, DateOfReturn: time.Date(2024, time.April, 1, 12, 0, 0, 0, time.UTC)})
+			db.Create(&model.ProgramCodeReminder{ProgramCodeId: 12, Sample: 5, IsDefault: true, Status: 1, PercentPassed: 100, DateOfReturn: time.Date(2024, time.May, 1, 12, 0, 0, 0, time.UTC)})
+			db.Create(&model.ProgramCodeReminder{ProgramCodeId: 12, Sample: 6, IsDefault: true, Status: 1, PercentPassed: 100, DateOfReturn: time.Date(2024, time.June, 1, 12, 0, 0, 0, time.UTC)})
+			db.Create(&model.ProgramCodeReminder{ProgramCodeId: 12, Sample: 7, IsDefault: true, Status: 1, PercentPassed: 100, DateOfReturn: time.Date(2024, time.July, 1, 12, 0, 0, 0, time.UTC)})
+			db.Create(&model.ProgramCodeReminder{ProgramCodeId: 12, Sample: 8, IsDefault: true, Status: 1, PercentPassed: 100, DateOfReturn: time.Date(2024, time.August, 1, 12, 0, 0, 0, time.UTC)})
 			db.Create(&model.ProgramCodeReminder{ProgramCodeId: 12, Sample: 9, IsDefault: true, DateOfReturn: time.Date(2024, time.September, 1, 12, 0, 0, 0, time.UTC)})
 			db.Create(&model.ProgramCodeReminder{ProgramCodeId: 12, Sample: 10, IsDefault: true, DateOfReturn: time.Date(2024, time.October, 1, 12, 0, 0, 0, time.UTC)})
 			db.Create(&model.ProgramCodeReminder{ProgramCodeId: 12, Sample: 11, IsDefault: true, DateOfReturn: time.Date(2024, time.November, 1, 12, 0, 0, 0, time.UTC)})
@@ -168,7 +178,19 @@ func (u ProgramRepositoryImpl) FindOne(id int) (model.Program, error) {
 	result := model.Program{
 		ID: id,
 	}
-	err := u.db.Preload("Provider").Preload("ProgramCodes.ProgramCodeReminders").First(&result).Error
+
+	err := u.db.
+		Preload("Provider", func(db *gorm.DB) *gorm.DB {
+			return db.Order("id desc")
+		}).
+		Preload("ProgramCodes", func(db *gorm.DB) *gorm.DB {
+			return db.Order("id desc")
+		}).
+		Preload("ProgramCodes.ProgramCodeReminders", func(db *gorm.DB) *gorm.DB {
+			return db.Order("id desc")
+		}).
+		Debug().
+		First(&result).Error
 	if err != nil {
 		return model.Program{}, err
 	}
@@ -189,4 +211,78 @@ func (u ProgramRepositoryImpl) FindForReminder(num int) ([]dto.ProgramReminderRe
 		return []dto.ProgramReminderResp{}, err
 	}
 	return data, nil
+}
+
+func (u ProgramRepositoryImpl) Save(data *model.Program) (model.Program, error) {
+	var err error
+	err = u.db.Save(data).Error
+	if err != nil {
+		fmt.Println(err)
+		return model.Program{}, err
+	}
+
+	return *data, nil
+}
+
+func (u ProgramRepositoryImpl) FindByCodeId(id int, codeId int) (model.ProgramCode, error) {
+	result := model.ProgramCode{
+		ID:        codeId,
+		ProgramId: id,
+	}
+	err := u.db.Model(&model.ProgramCode{}).First(&result).Error
+	if err != nil {
+		return model.ProgramCode{}, err
+	}
+	return result, nil
+}
+
+func (u ProgramRepositoryImpl) SaveCode(data *model.ProgramCode) (model.ProgramCode, error) {
+	var err error
+	err = u.db.Save(data).Error
+	if err != nil {
+		fmt.Println(err)
+		return model.ProgramCode{}, err
+	}
+
+	return *data, nil
+}
+
+func (u ProgramRepositoryImpl) CreateCode(data *model.ProgramCode) (model.ProgramCode, error) {
+	var err error
+	err = u.db.Omit("ID").Create(data).Error
+	if err != nil {
+		fmt.Println(err)
+		return model.ProgramCode{}, err
+	}
+
+	return *data, nil
+}
+
+func (u ProgramRepositoryImpl) SaveCodeDetail(data *model.ProgramCodeReminder) (model.ProgramCodeReminder, error) {
+	var err error
+	err = u.db.Save(data).Error
+	if err != nil {
+		fmt.Println(err)
+		return model.ProgramCodeReminder{}, err
+	}
+
+	return *data, nil
+}
+
+func (u ProgramRepositoryImpl) DeleteCodeById(id int) error {
+	err := u.db.Where("id = ?", id).Delete(&model.ProgramCode{}).Error
+	if err != nil {
+		fmt.Println("Got an error when delete program code. Error: ", err)
+		return err
+	}
+	return nil
+}
+
+func (u ProgramRepositoryImpl) DeleteDetailCodeById(id int) error {
+	err := u.db.Where("program_code_id = ?", id).Delete(&model.ProgramCodeReminder{}).Error
+	if err != nil {
+		fmt.Println("Got an error when delete program code detail. Error: ", err)
+		return err
+	}
+	return nil
 }

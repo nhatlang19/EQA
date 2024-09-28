@@ -2,6 +2,7 @@ package service
 
 import (
 	dto "EQA/backend/app/domain/dto"
+	"EQA/backend/app/domain/model"
 	"fmt"
 	"net/http"
 	"os"
@@ -20,6 +21,11 @@ type ProgramService interface {
 	GetAll(c *gin.Context)
 	GetOne(c *gin.Context)
 	Reminder()
+	Update(c *gin.Context)
+	UpdateCode(c *gin.Context)
+	CreateCode(c *gin.Context)
+	DeleteCode(c *gin.Context)
+	UpsertDatail(c *gin.Context)
 }
 
 type ProgramServiceImpl struct {
@@ -53,6 +59,113 @@ func (s ProgramServiceImpl) GetOne(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, pkg.BuildResponse(constant.Success, data))
+}
+
+func (s ProgramServiceImpl) Update(c *gin.Context) {
+	defer pkg.PanicHandler(c)
+	id, _ := strconv.Atoi(c.Param("ID"))
+	var req dto.UpdateProgramResp
+	var err error
+
+	if err = c.ShouldBindJSON(&req); err != nil {
+		pkg.PanicException(constant.BadRequest, err.Error())
+	}
+
+	res, err := s.programRepo.FindOne(id)
+	if err != nil {
+		pkg.PanicException(constant.DataNotFound, "Invalid Id")
+	}
+	res.Name = req.Name
+	res, err = s.programRepo.Save(&res)
+	if err != nil {
+		fmt.Println(err)
+		pkg.PanicException(constant.BadRequest, err.Error())
+	}
+
+	c.JSON(http.StatusOK, pkg.BuildResponse(constant.Success, res))
+}
+
+func (s ProgramServiceImpl) UpdateCode(c *gin.Context) {
+	defer pkg.PanicHandler(c)
+	id, _ := strconv.Atoi(c.Param("ID"))
+	codeId, _ := strconv.Atoi(c.Param("CodeId"))
+	var req dto.UpdateProgramCodeResp
+	var err error
+
+	if err = c.ShouldBindJSON(&req); err != nil {
+		pkg.PanicException(constant.BadRequest, err.Error())
+	}
+
+	res, err := s.programRepo.FindByCodeId(id, codeId)
+	if err != nil {
+		pkg.PanicException(constant.DataNotFound, "Invalid Id")
+	}
+	res.Name = req.Name
+	res.Year = req.Year
+	res, err = s.programRepo.SaveCode(&res)
+	if err != nil {
+		fmt.Println(err)
+		pkg.PanicException(constant.BadRequest, err.Error())
+	}
+
+	c.JSON(http.StatusOK, pkg.BuildResponse(constant.Success, res))
+}
+
+func (s ProgramServiceImpl) CreateCode(c *gin.Context) {
+	defer pkg.PanicHandler(c)
+	id, _ := strconv.Atoi(c.Param("ID"))
+	var req dto.CreateProgramCodeResp
+	var err error
+
+	if err = c.ShouldBindJSON(&req); err != nil {
+		pkg.PanicException(constant.BadRequest, err.Error())
+	}
+
+	res, err := s.programRepo.CreateCode(&model.ProgramCode{Name: req.Name, ProgramId: id, ID: 0, Year: req.Year})
+	if err != nil {
+		fmt.Println(err)
+		pkg.PanicException(constant.BadRequest, err.Error())
+	}
+
+	c.JSON(http.StatusOK, pkg.BuildResponse(constant.Success, res))
+}
+
+func (s ProgramServiceImpl) DeleteCode(c *gin.Context) {
+	defer pkg.PanicHandler(c)
+	codeId, _ := strconv.Atoi(c.Param("CodeId"))
+	var err error
+	err = s.programRepo.DeleteCodeById(codeId)
+	if err != nil {
+		fmt.Println(err)
+		pkg.PanicException(constant.BadRequest, err.Error())
+	}
+
+	c.JSON(http.StatusOK, pkg.BuildResponse(constant.Success, "Successfully deleted"))
+}
+
+func (s ProgramServiceImpl) UpsertDatail(c *gin.Context) {
+	defer pkg.PanicHandler(c)
+	codeId, _ := strconv.Atoi(c.Param("CodeId"))
+	var req dto.ProgramCodeReminderReq
+	var err error
+
+	if err = c.ShouldBindJSON(&req); err != nil {
+		pkg.PanicException(constant.BadRequest, err.Error())
+	}
+	err = s.programRepo.DeleteDetailCodeById(codeId)
+	if err != nil {
+		fmt.Println(err)
+		pkg.PanicException(constant.BadRequest, err.Error())
+	}
+	for _, data := range req.ProgramCodeReminders {
+		_, err := s.programRepo.SaveCodeDetail(&model.ProgramCodeReminder{ProgramCodeId: codeId, Sample: data.Sample, DateOfReceive: data.DateOfReceive, DateOfReturn: data.DateOfReturn, Status: data.Status, PercentPassed: data.PercentPassed})
+		if err != nil {
+			fmt.Println(err)
+			pkg.PanicException(constant.BadRequest, err.Error())
+		}
+	}
+
+	c.JSON(http.StatusOK, pkg.BuildResponse(constant.Success, "Success"))
 }
 
 func (s ProgramServiceImpl) Reminder() {

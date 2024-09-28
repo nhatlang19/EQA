@@ -58,7 +58,6 @@
   const programDate = [];
   const programStatus = [];
   const programPercent = [];
-  const programFailed = [];
   
   onMounted(async () => {
     fetchData();
@@ -90,7 +89,7 @@
               programDate[`${index} - ${monthReminder}`] = reminder.date_of_return
 
               programStatus[`${index} - ${monthReminder} - ${formatSample(reminder.sample)}`] = reminder.status
-              programPercent[`${index} - ${monthReminder} - ${formatSample(reminder.sample)}`] = reminder.percent
+              programPercent[`${index} - ${monthReminder} - ${formatSample(reminder.sample)}`] = reminder.percent_passed
           }
       }
     }
@@ -103,11 +102,10 @@
     let list = programSampleList[`${index} - ${month}`];
     if (list && list.length) {
       for (let sample of list) {
-        console.log(programStatus);
         let status = programStatus[`${index} - ${month} - ${sample}`];
         let percent = programPercent[`${index} - ${month} - ${sample}`];
         if (status == 1) {
-          result += `${name}-${sample}: đạt ${percent} <br />`;
+          result += `${name}-${sample}: đạt ${percent}% <br />`;
         }
         if (status == 2) {
           result += `${name}-${sample}: không đạt <br />`;

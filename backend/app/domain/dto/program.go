@@ -16,3 +16,23 @@ type EmaiReminderPayload struct {
 	Deadline string
 	Sample   int
 }
+
+type UpdateProgramResp struct {
+	ID   int    `json:"id"`
+	Name string `json:"name"`
+}
+
+type UpdateProgramCodeResp struct {
+	ID   int    `json:"id"`
+	Name string `json:"name"`
+	Year int    `json:"year"`
+}
+
+type CreateProgramCodeResp struct {
+	Name string `json:"name"`
+	Year int    `json:"year"`
+}
+
+type ProgramCodeReminderReq struct {
+	ProgramCodeReminders []model.ProgramCodeReminder `json:"program_code_reminders"`
+}
