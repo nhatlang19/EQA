@@ -7,14 +7,14 @@ import (
 type ProgramReminderResp struct {
 	ProgramName string `json:"program_name"`
 	Code        string `json:"code"`
-	model.ProgramCodeReminder
+	model.ProgramCodeDetail
 }
 
 type ProgramExportResp struct {
 	ProgramName  string `json:"program_name"`
 	Code         string `json:"code"`
 	ProviderName string `json:"provider_name"`
-	model.ProgramCodeReminder
+	model.ProgramCodeDetail
 }
 
 type EmaiReminderPayload struct {
@@ -40,8 +40,8 @@ type CreateProgramCodeResp struct {
 	Year int    `json:"year"`
 }
 
-type ProgramCodeReminderReq struct {
-	ProgramCodeReminders []model.ProgramCodeReminder `json:"program_code_reminders"`
+type ProgramCodeDetailReq struct {
+	ProgramCodeDetails []model.ProgramCodeDetail `json:"program_code_details"`
 }
 
 type ProgramCodeFilter struct {

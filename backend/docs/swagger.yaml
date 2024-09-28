@@ -49,18 +49,20 @@ definitions:
         type: integer
       name:
         type: string
-      program_code_reminders:
+      program_code_details:
         items:
-          $ref: '#/definitions/model.ProgramCodeReminder'
+          $ref: '#/definitions/model.ProgramCodeDetail'
         type: array
       program_id:
+        type: integer
+      status:
         type: integer
       updated_at:
         type: string
       year:
         type: integer
     type: object
-  model.ProgramCodeReminder:
+  model.ProgramCodeDetail:
     properties:
       created_at:
         type: string

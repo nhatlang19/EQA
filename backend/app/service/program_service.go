@@ -152,7 +152,7 @@ func (s ProgramServiceImpl) DeleteCode(c *gin.Context) {
 func (s ProgramServiceImpl) UpsertDatail(c *gin.Context) {
 	defer pkg.PanicHandler(c)
 	codeId, _ := strconv.Atoi(c.Param("CodeId"))
-	var req dto.ProgramCodeReminderReq
+	var req dto.ProgramCodeDetailReq
 	var err error
 
 	if err = c.ShouldBindJSON(&req); err != nil {
@@ -163,8 +163,8 @@ func (s ProgramServiceImpl) UpsertDatail(c *gin.Context) {
 		fmt.Println(err)
 		pkg.PanicException(constant.BadRequest, err.Error())
 	}
-	for _, data := range req.ProgramCodeReminders {
-		_, err := s.programRepo.SaveCodeDetail(&model.ProgramCodeReminder{ProgramCodeId: codeId, Sample: data.Sample, DateOfReceive: data.DateOfReceive, DateOfReturn: data.DateOfReturn, Status: data.Status, PercentPassed: data.PercentPassed})
+	for _, data := range req.ProgramCodeDetails {
+		_, err := s.programRepo.SaveCodeDetail(&model.ProgramCodeDetail{ProgramCodeId: codeId, Sample: data.Sample, DateOfReceive: data.DateOfReceive, DateOfReturn: data.DateOfReturn, Status: data.Status, PercentPassed: data.PercentPassed})
 		if err != nil {
 			fmt.Println(err)
 			pkg.PanicException(constant.BadRequest, err.Error())

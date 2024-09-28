@@ -12,16 +12,16 @@ type Program struct {
 }
 
 type ProgramCode struct {
-	ID                   int                   `gorm:"column:id; primary_key;not null;" sql:"AUTO_INCREMENT" json:"id"`
-	Name                 string                `gorm:"column:name;" json:"name"`
-	ProgramId            int                   `gorm:"column:program_id;" json:"program_id"`
-	Year                 int                   `gorm:"column:year;" json:"year"`
-	ProgramCodeReminders []ProgramCodeReminder `gorm:"foreignkey:ProgramCodeId;omitempty" json:"program_code_reminders"`
-	Status               int                   `gorm:"column:status;default:1" json:"status"`
+	ID                 int                 `gorm:"column:id; primary_key;not null;" sql:"AUTO_INCREMENT" json:"id"`
+	Name               string              `gorm:"column:name;" json:"name"`
+	ProgramId          int                 `gorm:"column:program_id;" json:"program_id"`
+	Year               int                 `gorm:"column:year;" json:"year"`
+	ProgramCodeDetails []ProgramCodeDetail `gorm:"foreignkey:ProgramCodeId;omitempty" json:"program_code_details"`
+	Status             int                 `gorm:"column:status;default:1" json:"status"`
 	BaseModel
 }
 
-type ProgramCodeReminder struct {
+type ProgramCodeDetail struct {
 	ID            int       `gorm:"column:id; primary_key;not null" json:"id"`
 	ProgramCodeId int       `gorm:"column:program_code_id;" json:"program_code_id"`
 	Sample        int       `gorm:"column:sample;" json:"sample"`

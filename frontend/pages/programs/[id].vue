@@ -39,7 +39,7 @@
       <div class="flex flex-col ml-3">
         <div
           class="flex flex-row space-x-2 items-center"
-          v-for="(reminder, idx) in code.program_code_reminders"
+          v-for="(reminder, idx) in code.program_code_details"
         >
           <div class="p-3 w-20">Mẫu:
             <input
@@ -282,13 +282,13 @@ const fetchData = async (id) => {
 const upsertDatail = async (code) => {
   let id = route.params.id;
   try {
-    let program_code_reminders = code.program_code_reminders.map(function(obj) {
+    let program_code_details = code.program_code_details.map(function(obj) {
       return {...obj, sample: +obj.sample};
     });
     const data = await useFetch(`${apiBase}/programs/${id}/program_codes/${code.id}/details`, {
       method: 'POST',
       body: JSON.stringify({
-        program_code_reminders: program_code_reminders
+        program_code_details: program_code_details
       }),
       headers: {
         'Content-Type': 'application/json'
@@ -433,8 +433,8 @@ const toggleCheckbox = (reminder, value) => {
 
 const addMore = (code) => {
   let sample = 1;
-  if (code.program_code_reminders.length > 0) {
-    sample = code.program_code_reminders[code.program_code_reminders.length - 1].sample + 1;
+  if (code.program_code_details.length > 0) {
+    sample = code.program_code_details[code.program_code_details.length - 1].sample + 1;
   }
   let obj = {
     "program_code_id": code.id,
@@ -445,14 +445,14 @@ const addMore = (code) => {
     "status": 0,
     "percent_passed": 0
   };
-  code.program_code_reminders = [
-    ...code.program_code_reminders, obj
+  code.program_code_details = [
+    ...code.program_code_details, obj
   ]
 }
 
 const removeRow = (code, indexToRemove) => {
-  const updatedItems = code.program_code_reminders.filter((_, index) => index !== indexToRemove);
-  code.program_code_reminders = [
+  const updatedItems = code.program_code_details.filter((_, index) => index !== indexToRemove);
+  code.program_code_details = [
     ...updatedItems
   ]
 };

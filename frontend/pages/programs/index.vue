@@ -100,7 +100,7 @@
       let programCodes = items.value[index].program_codes;
       for (const idx in programCodes) {
           let name = programCodes[idx].name;
-          let reminders =  programCodes[idx].program_code_reminders;
+          let reminders =  programCodes[idx].program_code_details;
           
           for (const reminderIndex in reminders) {
               let reminder = reminders[reminderIndex];

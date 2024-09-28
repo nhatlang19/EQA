@@ -232,13 +232,16 @@ const docTemplate = `{
                 "name": {
                     "type": "string"
                 },
-                "program_code_reminders": {
+                "program_code_details": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/model.ProgramCodeReminder"
+                        "$ref": "#/definitions/model.ProgramCodeDetail"
                     }
                 },
                 "program_id": {
+                    "type": "integer"
+                },
+                "status": {
                     "type": "integer"
                 },
                 "updated_at": {
@@ -249,7 +252,7 @@ const docTemplate = `{
                 }
             }
         },
-        "model.ProgramCodeReminder": {
+        "model.ProgramCodeDetail": {
             "type": "object",
             "properties": {
                 "created_at": {
