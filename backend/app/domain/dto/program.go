@@ -10,6 +10,13 @@ type ProgramReminderResp struct {
 	model.ProgramCodeReminder
 }
 
+type ProgramExportResp struct {
+	ProgramName  string `json:"program_name"`
+	Code         string `json:"code"`
+	ProviderName string `json:"provider_name"`
+	model.ProgramCodeReminder
+}
+
 type EmaiReminderPayload struct {
 	Name     string
 	Code     string

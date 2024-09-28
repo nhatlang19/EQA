@@ -41,7 +41,15 @@
           class="flex flex-row space-x-2 items-center"
           v-for="(reminder, idx) in code.program_code_reminders"
         >
-          <div class="p-3">Mẫu: {{ reminder.sample }}</div>
+          <div class="p-3 w-20">Mẫu:
+            <input
+                  type="text"
+                  v-model="reminder.sample"
+                  required
+                  class="block w-full p-1 border rounded-md focus:outline-none focus:ring focus:ring-blue-300"
+                  placeholder="Mẫu"
+              />
+          </div>
           <div class="p-3">
             Ngày nhận:
             <VueDatePicker
@@ -58,20 +66,25 @@
               :clearable="false"
             ></VueDatePicker>
           </div>
-          <div class="flex items-center">
-            <input v-if="reminder.status == 0" type="checkbox" id="checkbox" checked class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 focus:ring-2" />
-            <input v-else type="checkbox" id="checkbox" @change="toggleCheckbox(reminder, 0)" class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 focus:ring-2" />
-            <label for="checkbox" class="ml-2 text-sm text-gray-700">N/A</label>
-          </div>
-          <div class="flex items-center">
-            <input v-if="reminder.status == 1" type="checkbox" id="checkbox" checked class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 focus:ring-2" />
-            <input v-else type="checkbox" id="checkbox" @change="toggleCheckbox(reminder, 1)" class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 focus:ring-2" />
-            <label for="checkbox" class="ml-2 text-sm text-gray-700">Đạt</label>
-          </div>
-          <div class="flex items-center">
-            <input v-if="reminder.status == 2" type="checkbox" id="checkbox" checked class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 focus:ring-2" />
-            <input v-else type="checkbox" id="checkbox" @change="toggleCheckbox(reminder, 2)" class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 focus:ring-2" />
-            <label for="checkbox" class="ml-2 text-sm text-gray-700">Không Đạt</label>
+          <div class="p-3">
+            Trạng thái:
+            <div class="flex flex-row items-center justify-between w-full space-x-2">
+              <div class="flex items-center">
+                <input v-if="reminder.status == 0" type="checkbox" id="checkbox" checked @change="toggleCheckbox(reminder, 0)" class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 focus:ring-2" />
+                <input v-else type="checkbox" id="checkbox" @change="toggleCheckbox(reminder, 0)" class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 focus:ring-2" />
+                <label for="checkbox" class="ml-2 text-sm text-gray-700">N/A</label>
+              </div>
+              <div class="flex items-center">
+                <input v-if="reminder.status == 1" type="checkbox" id="checkbox" checked @change="toggleCheckbox(reminder, 1)" class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 focus:ring-2" />
+                <input v-else type="checkbox" id="checkbox" @change="toggleCheckbox(reminder, 1)" class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 focus:ring-2" />
+                <label for="checkbox" class="ml-2 text-sm text-gray-700">Đạt</label>
+              </div>
+              <div class="flex items-center">
+                <input v-if="reminder.status == 2" type="checkbox" id="checkbox" checked @change="toggleCheckbox(reminder, 2)" class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 focus:ring-2" />
+                <input v-else type="checkbox" id="checkbox" @change="toggleCheckbox(reminder, 2)" class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 focus:ring-2" />
+                <label for="checkbox" class="ml-2 text-sm text-gray-700">Không Đạt</label>
+              </div>
+            </div>
           </div>
           <div class="p-3">
              % đạt
@@ -84,7 +97,7 @@
               />
           </div>
           <div class="flex text-red-500">
-            <a href="#" @click="removeRow(code, index)" class="flex"><XCircleIcon  class="w-6 h-6 text-red-500" /> Xoá</a>
+            <a href="#" @click="removeRow(code, idx)" class="flex"><XCircleIcon  class="w-6 h-6 text-red-500" /> Xoá</a>
           </div>
         </div>
 
@@ -269,10 +282,13 @@ const fetchData = async (id) => {
 const upsertDatail = async (code) => {
   let id = route.params.id;
   try {
+    let program_code_reminders = code.program_code_reminders.map(function(obj) {
+      return {...obj, sample: +obj.sample};
+    });
     const data = await useFetch(`${apiBase}/programs/${id}/program_codes/${code.id}/details`, {
       method: 'POST',
       body: JSON.stringify({
-        program_code_reminders: code.program_code_reminders
+        program_code_reminders: program_code_reminders
       }),
       headers: {
         'Content-Type': 'application/json'
@@ -418,7 +434,7 @@ const toggleCheckbox = (reminder, value) => {
 const addMore = (code) => {
   let sample = 1;
   if (code.program_code_reminders.length > 0) {
-    sample = code.program_code_reminders[0].sample + 1;
+    sample = code.program_code_reminders[code.program_code_reminders.length - 1].sample + 1;
   }
   let obj = {
     "program_code_id": code.id,

@@ -12,7 +12,7 @@ type Program struct {
 }
 
 type ProgramCode struct {
-	ID                   int                   `gorm:"column:id; primary_key;not null;default:nextval('permissions_id_seq');omitempty" json:"id"`
+	ID                   int                   `gorm:"column:id; primary_key;not null;" sql:"AUTO_INCREMENT" json:"id"`
 	Name                 string                `gorm:"column:name;" json:"name"`
 	ProgramId            int                   `gorm:"column:program_id;" json:"program_id"`
 	Year                 int                   `gorm:"column:year;" json:"year"`

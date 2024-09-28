@@ -11,6 +11,7 @@ import (
 
 type ProgramRepository interface {
 	FindAll() ([]model.Program, error)
+	FindForExport() ([]dto.ProgramExportResp, error)
 	FindOne(id int) (model.Program, error)
 	FindOneWithFilter(id int, filter dto.ProgramCodeFilter) (model.Program, error)
 	FindForReminder(num int) ([]dto.ProgramReminderResp, error)
@@ -43,6 +44,7 @@ func seedDataProgram(db *gorm.DB) {
 			db.Create(&model.Program{ID: 9, Name: "EBV", ProviderId: 1})
 			db.Create(&model.Program{ID: 10, Name: "Vi sinh nhuộm soi", ProviderId: 2})
 			db.Create(&model.Program{ID: 11, Name: "Vancomycin", ProviderId: 2})
+			db.Exec("SELECT setval('programs_id_seq', (SELECT MAX(id) FROM programs));")
 
 			db.Create(&model.ProgramCode{ID: 1, Name: "CM16A", ProgramId: 1, Year: 2024})
 			db.Create(&model.ProgramCode{ID: 2, Name: "TO06C", ProgramId: 2, Year: 2024})
@@ -56,6 +58,7 @@ func seedDataProgram(db *gorm.DB) {
 			db.Create(&model.ProgramCode{ID: 10, Name: "EB03C", ProgramId: 9, Year: 2024})
 			db.Create(&model.ProgramCode{ID: 11, Name: "QE1021 CK5", ProgramId: 10, Year: 2024})
 			db.Create(&model.ProgramCode{ID: 12, Name: "IM16C", ProgramId: 11, Year: 2024})
+			db.Exec("SELECT setval('program_codes_id_seq', (SELECT MAX(id) FROM program_codes));")
 
 			db.Create(&model.ProgramCodeReminder{ProgramCodeId: 1, Sample: 1, IsDefault: true, Status: 1, PercentPassed: 100, DateOfReturn: time.Date(2024, time.January, 1, 12, 0, 0, 0, time.UTC)})
 			db.Create(&model.ProgramCodeReminder{ProgramCodeId: 1, Sample: 2, IsDefault: true, Status: 1, PercentPassed: 100, DateOfReturn: time.Date(2024, time.April, 1, 12, 0, 0, 0, time.UTC)})
@@ -220,7 +223,7 @@ func (u ProgramRepositoryImpl) FindOneWithFilter(id int, filter dto.ProgramCodeF
 			return db.Order("id desc")
 		}).
 		Preload("ProgramCodes.ProgramCodeReminders", func(db *gorm.DB) *gorm.DB {
-			return db.Order("id desc")
+			return db.Order("sample asc")
 		}).
 		Debug().
 		First(&result).Error
@@ -242,6 +245,23 @@ func (u ProgramRepositoryImpl) FindForReminder(num int) ([]dto.ProgramReminderRe
 		Find(&data).Error
 	if err != nil {
 		return []dto.ProgramReminderResp{}, err
+	}
+	return data, nil
+}
+
+func (u ProgramRepositoryImpl) FindForExport() ([]dto.ProgramExportResp, error) {
+	var data []dto.ProgramExportResp
+	currentTime := time.Now()
+	err := u.db.Model(&model.Program{}).
+		Joins("LEFT JOIN providers as providers ON programs.provider_id = providers.id").
+		Joins("LEFT JOIN program_codes as program_codes ON program_codes.program_id = programs.id").
+		Joins("LEFT JOIN program_code_reminders as program_code_reminders ON program_codes.id = program_code_reminders.program_code_id").
+		Where("program_codes.year = ?", currentTime.Year()).
+		Select("programs.name as program_name, providers.name as provider_name, program_codes.name as code, program_code_reminders.*").
+		Debug().
+		Find(&data).Error
+	if err != nil {
+		return []dto.ProgramExportResp{}, err
 	}
 	return data, nil
 }

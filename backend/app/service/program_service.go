@@ -15,6 +15,8 @@ import (
 	"EQA/backend/app/pkg"
 	"EQA/backend/app/pkg/mail"
 	"EQA/backend/app/repository"
+
+	exporter "EQA/backend/app/pkg/exporter"
 )
 
 type ProgramService interface {
@@ -26,6 +28,7 @@ type ProgramService interface {
 	CreateCode(c *gin.Context)
 	DeleteCode(c *gin.Context)
 	UpsertDatail(c *gin.Context)
+	Export(c *gin.Context)
 }
 
 type ProgramServiceImpl struct {
@@ -124,7 +127,7 @@ func (s ProgramServiceImpl) CreateCode(c *gin.Context) {
 		pkg.PanicException(constant.BadRequest, err.Error())
 	}
 
-	res, err := s.programRepo.CreateCode(&model.ProgramCode{Name: req.Name, ProgramId: id, ID: 0, Year: req.Year})
+	res, err := s.programRepo.CreateCode(&model.ProgramCode{Name: req.Name, ProgramId: id, Year: req.Year})
 	if err != nil {
 		fmt.Println(err)
 		pkg.PanicException(constant.BadRequest, err.Error())
@@ -194,4 +197,31 @@ func (s ProgramServiceImpl) Reminder() {
 			fmt.Println(err.Error())
 		}
 	}
+}
+
+func (s ProgramServiceImpl) Export(c *gin.Context) {
+	defer pkg.PanicHandler(c)
+	data, err := s.programRepo.FindForExport()
+	if err != nil {
+		pkg.PanicException(constant.InternalServer, "Failed to fetch data from database")
+	}
+
+	exporter, err := exporter.ExporterFactory(exporter.ProgramType)
+	if err != nil {
+		fmt.Println("Error:", err)
+		return
+	}
+
+	buffer, err := exporter.Export(data)
+	if err != nil {
+		fmt.Println("Error exporting:", err)
+		return
+	}
+
+	downloadName := time.Now().UTC().Format("export-data-program.xlsx")
+
+	c.Header("Content-Type", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+	c.Header("Content-Description", "File Transfer")
+	c.Header("Content-Disposition", "attachment; filename="+downloadName)
+	c.Data(http.StatusOK, "application/octet-stream", buffer.Bytes())
 }

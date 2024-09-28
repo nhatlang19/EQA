@@ -1,5 +1,13 @@
 <template>
     <h1 class="p-4 text-xl">KẾT QUẢ GIÁM SÁT THỰC HIỆN KẾ HOẠCH NGOẠI KIỂM</h1>
+    <div class="text-right mr-2">
+      <button
+        @click="exportHandler()"
+        class="px-4 py-2 text-sm font-bold text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none focus:ring focus:ring-blue-300"
+      >
+        Export
+      </button>
+    </div>
     <div class="flex">
       <table class="m-2 table-auto w-full border-collapse border border-slate-500 text-md">
         <thead>
@@ -68,6 +76,22 @@
     if (programs.value) {
       items.value = programs.value.data;
       convertData();
+    }
+  }
+
+  const exportHandler = async () => {
+    const response = await fetch(`${apiBase}/programs/export`, {
+      method: 'GET',
+    });
+    if (response.ok) {
+      const blob = await response.blob()
+      const link = document.createElement('a')
+      link.href = URL.createObjectURL(blob)
+      link.download = 'program.xlsx'
+      link.click()
+      URL.revokeObjectURL(link.href)
+    } else {
+      console.error('Failed to download file')
     }
   }
   
