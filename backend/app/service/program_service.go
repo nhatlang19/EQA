@@ -52,8 +52,11 @@ func (s ProgramServiceImpl) GetAll(c *gin.Context) {
 
 func (s ProgramServiceImpl) GetOne(c *gin.Context) {
 	defer pkg.PanicHandler(c)
+	var filter dto.ProgramCodeFilter
+	filter.Year, _ = strconv.Atoi(c.DefaultQuery("year", "-1"))
+
 	id, _ := strconv.Atoi(c.Param("ID"))
-	data, err := s.programRepo.FindOne(id)
+	data, err := s.programRepo.FindOneWithFilter(id, filter)
 	if err != nil {
 		pkg.PanicException(constant.DataNotFound, fmt.Sprintf("Not found program with ID = %d", id))
 	}

@@ -8,13 +8,26 @@
         <h2 class="p-2 font-bold text-lg">Chương trình: {{ program.name }} </h2>
         <a href="#" @click="openModalProgram"><PencilIcon  class="w-6 h-6 text-blue-500" /></a>
       </div>
+      
+    </div> 
+    <div class="mb-2 flex flex-row justify-between w-full">
+      <div class="flex items-center space-x-2">
+        <select id="years" v-model="selectedYear" @change="handleChangeYear" class="block p-2 border border-gray-300 rounded-lg shadow-sm focus:ring focus:ring-blue-500 focus:outline-none">
+              <option value="-1">All</option>
+              <option value="2024">2024</option>
+              <option value="2025">2025</option>
+              <option value="2026">2026</option>
+              <option value="2027">2027</option>
+              <option value="2028">2028</option>
+          </select>
+      </div>
       <button
         @click="openModalProgramCodeNew()"
-        class="px-4 py-2 m-2 text-sm font-bold text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none focus:ring focus:ring-blue-300"
+        class="px-4 py-2 text-sm font-bold text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none focus:ring focus:ring-blue-300"
       >
         Thêm Mã
       </button>
-    </div> 
+    </div>
     <Collapsible :title="`${code.name}`" v-for="(code, index) in program.program_codes">
     <div>
       <div class="flex items-center space-x-2">
@@ -70,12 +83,12 @@
                   class="block w-full mt-1 p-2 border rounded-md focus:outline-none focus:ring focus:ring-blue-300"
               />
           </div>
-          <div v-if="idx === code.program_code_reminders.length - 1" class="flex">
-            <a href="#" @click="addMore(code)" class="flex"><PlusCircleIcon  class="w-6 h-6 text-blue-500" /> Thêm</a>
+          <div class="flex text-red-500">
+            <a href="#" @click="removeRow(code, index)" class="flex"><XCircleIcon  class="w-6 h-6 text-red-500" /> Xoá</a>
           </div>
         </div>
 
-        <div v-if="code.program_code_reminders.length === 0" class="flex">
+        <div class="flex">
             <a href="#" @click="addMore(code)" class="flex"><PlusCircleIcon  class="w-6 h-6 text-blue-500" /> Thêm</a>
           </div>
       </div>
@@ -237,13 +250,16 @@ const selectedProgramCode = ref({});
 const selectedProgramCodePrev = ref({});
 const selectedProgramCodeNew = ref({});
 const selectedProgramCodeDelete = ref({});
+const selectedYear = ref(-1);
+
 
 onMounted(async () => {
   fetchData(route.params.id);
 });
 
+
 const fetchData = async (id) => {
-  const { data } = await useFetch(`${apiBase}/programs/${id}`);
+  const { data } = await useFetch(`${apiBase}/programs/${id}?year=${selectedYear.value}`);
   if (data.value) {
     program.value = data.value.data;
     programPrev.value = {...data.value.data};
@@ -390,7 +406,10 @@ const saveModalProgramCodeDelete = async () => {
   await fetchData(route.params.id);
 };
 
-
+const handleChangeYear = async () => {
+  console.log(selectedYear)
+  await fetchData(route.params.id);
+};
 
 const toggleCheckbox = (reminder, value) => {
   reminder.status = value;
@@ -399,7 +418,7 @@ const toggleCheckbox = (reminder, value) => {
 const addMore = (code) => {
   let sample = 1;
   if (code.program_code_reminders.length > 0) {
-    sample = code.program_code_reminders[code.program_code_reminders.length - 1].sample + 1;
+    sample = code.program_code_reminders[0].sample + 1;
   }
   let obj = {
     "program_code_id": code.id,
@@ -414,5 +433,12 @@ const addMore = (code) => {
     ...code.program_code_reminders, obj
   ]
 }
+
+const removeRow = (code, indexToRemove) => {
+  const updatedItems = code.program_code_reminders.filter((_, index) => index !== indexToRemove);
+  code.program_code_reminders = [
+    ...updatedItems
+  ]
+};
 
 </script>

@@ -12,6 +12,7 @@ import (
 type ProgramRepository interface {
 	FindAll() ([]model.Program, error)
 	FindOne(id int) (model.Program, error)
+	FindOneWithFilter(id int, filter dto.ProgramCodeFilter) (model.Program, error)
 	FindForReminder(num int) ([]dto.ProgramReminderResp, error)
 	Save(program *model.Program) (model.Program, error)
 
@@ -167,7 +168,13 @@ func ProgramRepositoryInit(db *gorm.DB) *ProgramRepositoryImpl {
 
 func (u ProgramRepositoryImpl) FindAll() ([]model.Program, error) {
 	var data []model.Program
-	err := u.db.Model(&model.Program{}).Preload("Provider").Preload("ProgramCodes.ProgramCodeReminders").Order("id ASC").Find(&data).Error
+	currentTime := time.Now()
+	err := u.db.Model(&model.Program{}).Preload("Provider").
+		Preload("ProgramCodes", func(db *gorm.DB) *gorm.DB {
+			return db.Where("year = ?", currentTime.Year())
+		}).
+		Preload("ProgramCodes.ProgramCodeReminders").
+		Order("id ASC").Find(&data).Error
 	if err != nil {
 		return []model.Program{}, err
 	}
@@ -184,6 +191,32 @@ func (u ProgramRepositoryImpl) FindOne(id int) (model.Program, error) {
 			return db.Order("id desc")
 		}).
 		Preload("ProgramCodes", func(db *gorm.DB) *gorm.DB {
+			return db.Order("id desc")
+		}).
+		Preload("ProgramCodes.ProgramCodeReminders", func(db *gorm.DB) *gorm.DB {
+			return db.Order("id desc")
+		}).
+		Debug().
+		First(&result).Error
+	if err != nil {
+		return model.Program{}, err
+	}
+	return result, nil
+}
+
+func (u ProgramRepositoryImpl) FindOneWithFilter(id int, filter dto.ProgramCodeFilter) (model.Program, error) {
+	result := model.Program{
+		ID: id,
+	}
+
+	err := u.db.
+		Preload("Provider", func(db *gorm.DB) *gorm.DB {
+			return db.Order("id desc")
+		}).
+		Preload("ProgramCodes", func(db *gorm.DB) *gorm.DB {
+			if filter.Year != -1 {
+				return db.Where("year = ?", filter.Year).Order("id desc")
+			}
 			return db.Order("id desc")
 		}).
 		Preload("ProgramCodes.ProgramCodeReminders", func(db *gorm.DB) *gorm.DB {

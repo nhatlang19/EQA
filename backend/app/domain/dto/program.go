@@ -36,3 +36,7 @@ type CreateProgramCodeResp struct {
 type ProgramCodeReminderReq struct {
 	ProgramCodeReminders []model.ProgramCodeReminder `json:"program_code_reminders"`
 }
+
+type ProgramCodeFilter struct {
+	Year int `json:"year"`
+}
