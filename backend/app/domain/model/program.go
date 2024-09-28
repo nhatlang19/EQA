@@ -1,6 +1,8 @@
 package model
 
-import "time"
+import (
+	"time"
+)
 
 type Program struct {
 	ID           int           `gorm:"column:id; primary_key; not null" json:"id"`
@@ -22,13 +24,14 @@ type ProgramCode struct {
 }
 
 type ProgramCodeDetail struct {
-	ID            int       `gorm:"column:id; primary_key;not null" json:"id"`
-	ProgramCodeId int       `gorm:"column:program_code_id;" json:"program_code_id"`
-	Sample        int       `gorm:"column:sample;" json:"sample"`
-	DateOfReceive time.Time `gorm:"column:date_of_receive;default:CURRENT_TIMESTAMP" json:"date_of_receive"`
-	DateOfReturn  time.Time `gorm:"column:date_of_return;" json:"date_of_return"`
-	IsDefault     bool      `gorm:"column:is_default;default: false" json:"is_default"`
-	Status        int       `gorm:"column:status;default: 0" json:"status"`
-	PercentPassed int       `gorm:"column:percent_passed;" json:"percent_passed"`
+	ID                  int        `gorm:"column:id; primary_key;not null" json:"id"`
+	ProgramCodeId       int        `gorm:"column:program_code_id;" json:"program_code_id"`
+	Sample              int        `gorm:"column:sample;" json:"sample"`
+	DateOfReceive       time.Time  `gorm:"column:date_of_receive;default:CURRENT_TIMESTAMP" json:"date_of_receive"`
+	DateOfReturn        time.Time  `gorm:"column:date_of_return;" json:"date_of_return"`
+	DateOfReceiveResult *time.Time `gorm:"column:date_of_receive_result;" json:"date_of_receive_result"`
+	IsDefault           bool       `gorm:"column:is_default;default: false" json:"is_default"`
+	Status              int        `gorm:"column:status;default: 0" json:"status"`
+	PercentPassed       int        `gorm:"column:percent_passed;" json:"percent_passed"`
 	BaseModel
 }

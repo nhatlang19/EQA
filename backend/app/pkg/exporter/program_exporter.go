@@ -39,19 +39,22 @@ func (e ProgramExporter) Export(data interface{}) (*bytes.Buffer, error) {
 	// file.MergeCell(sheet, "I1", "M1")
 	// file.MergeCell(sheet, "N1", "O1")
 
-	file.SetCellStyle(sheet, "A1", "F1", style)
+	file.SetCellStyle(sheet, "A1", "I1", style)
 
 	file.SetCellValue(sheet, "A1", "TT")
 	file.SetCellValue(sheet, "B1", "Tên chương trình")
 	file.SetCellValue(sheet, "C1", "Nhà cung cấp")
 	file.SetCellValue(sheet, "D1", "Mã")
-	file.SetCellValue(sheet, "E1", "Mẫu thử")
-	file.SetCellValue(sheet, "F1", "Kết quả")
+	file.SetCellValue(sheet, "E1", "Đợt")
+	file.SetCellValue(sheet, "F1", "Ngày nhận mẫu")
+	file.SetCellValue(sheet, "G1", "Ngày trả kết quả")
+	file.SetCellValue(sheet, "H1", "Ngày nhận kết quả")
+	file.SetCellValue(sheet, "I1", "Kết quả")
 
 	records, _ := data.([]dto.ProgramExportResp)
 	rowNum := 2
 	for index, program := range records {
-		for i := 0; i < 6; i++ {
+		for i := 0; i < 9; i++ {
 			columnLetter := IndexToColumnLetter(i + 1)
 			cell := fmt.Sprintf("%s%d", columnLetter, rowNum)
 			switch i {
@@ -72,6 +75,16 @@ func (e ProgramExporter) Export(data interface{}) (*bytes.Buffer, error) {
 				}
 				file.SetCellValue(sheet, cell, sample)
 			case 5:
+				file.SetCellValue(sheet, cell, program.DateOfReceive.Format("02/01/2006"))
+			case 6:
+				file.SetCellValue(sheet, cell, program.DateOfReturn.Format("02/01/2006"))
+			case 7:
+				if program.DateOfReceiveResult != nil {
+					file.SetCellValue(sheet, cell, program.DateOfReceiveResult.Format("02/01/2006"))
+				} else {
+					file.SetCellValue(sheet, cell, "")
+				}
+			case 8:
 				var status interface{}
 				if program.Status == 1 {
 					status = fmt.Sprintf("Đạt %d%%", program.PercentPassed)

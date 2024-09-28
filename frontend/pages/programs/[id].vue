@@ -50,18 +50,26 @@
                   placeholder="Mẫu"
               />
           </div>
-          <div class="p-3">
-            Ngày nhận:
+          <div class="p-3 w-48">
+            Ngày nhận mẫu:
             <VueDatePicker
               v-model="reminder.date_of_receive"
               format="dd/MM/yyyy"
               :clearable="false"
             ></VueDatePicker>
           </div>
-          <div class="p-3">
-            Ngày trả:
+          <div class="p-3 w-48">
+            Ngày trả kết quả:
             <VueDatePicker
               v-model="reminder.date_of_return"
+              format="dd/MM/yyyy"
+              :clearable="false"
+            ></VueDatePicker>
+          </div>
+          <div class="p-3 w-48">
+            Ngày nhận kết quả:
+            <VueDatePicker
+              v-model="reminder.date_of_receive_result"
               format="dd/MM/yyyy"
               :clearable="false"
             ></VueDatePicker>

@@ -257,6 +257,7 @@ func (u ProgramRepositoryImpl) FindForExport() ([]dto.ProgramExportResp, error) 
 		Joins("LEFT JOIN program_codes as program_codes ON program_codes.program_id = programs.id").
 		Joins("LEFT JOIN program_code_details as program_code_details ON program_codes.id = program_code_details.program_code_id").
 		Where("program_codes.year = ?", currentTime.Year()).
+		Where("program_code_details.status = ?", 1).
 		Select("programs.name as program_name, providers.name as provider_name, program_codes.name as code, program_code_details.*").
 		Debug().
 		Find(&data).Error

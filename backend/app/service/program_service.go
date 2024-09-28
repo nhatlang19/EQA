@@ -164,7 +164,7 @@ func (s ProgramServiceImpl) UpsertDatail(c *gin.Context) {
 		pkg.PanicException(constant.BadRequest, err.Error())
 	}
 	for _, data := range req.ProgramCodeDetails {
-		_, err := s.programRepo.SaveCodeDetail(&model.ProgramCodeDetail{ProgramCodeId: codeId, Sample: data.Sample, DateOfReceive: data.DateOfReceive, DateOfReturn: data.DateOfReturn, Status: data.Status, PercentPassed: data.PercentPassed})
+		_, err := s.programRepo.SaveCodeDetail(&model.ProgramCodeDetail{ProgramCodeId: codeId, Sample: data.Sample, DateOfReceive: data.DateOfReceive, DateOfReturn: data.DateOfReturn, Status: data.Status, PercentPassed: data.PercentPassed, DateOfReceiveResult: data.DateOfReceiveResult})
 		if err != nil {
 			fmt.Println(err)
 			pkg.PanicException(constant.BadRequest, err.Error())
